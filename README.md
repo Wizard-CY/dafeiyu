@@ -10,8 +10,9 @@
 
 仓库和 Release 都只保留最新版，旧版本不单独存档；升级就直接下最新的包。
 
-<!-- 截图放好之后取消注释，说明见 docs/SCREENSHOTS.md：
-![私聊](assets/screenshots/chat.png)
+![对话示例（脱敏卡片）](assets/screenshots/chat.png)
+
+<!-- 状态中心截图补好后取消注释，说明见 docs/SCREENSHOTS.md：
 ![状态中心](assets/screenshots/status.png)
 -->
 
