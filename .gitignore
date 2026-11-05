@@ -1,0 +1,51 @@
+# 大肥鱼整合包 · YunShan You
+# 仅忽略运行时缓存和敏感状态；发布包本身仍保留完整运行框架。
+
+__pycache__/
+*.py[cod]
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Runtime state / secrets
+runtime/backups/
+runtime/AstrBot-4.29.3/data/data_v4.db
+runtime/AstrBot-4.29.3/data/data_v4.db-*
+runtime/AstrBot-4.29.3/data/memory/
+runtime/AstrBot-4.29.3/data/dafeiyu_friends.json
+runtime/AstrBot-4.29.3/data/dafeiyu_quota.json
+runtime/AstrBot-4.29.3/data/dafeiyu_private_outbox.json
+runtime/AstrBot-4.29.3/data/dafeiyu_group_memory*
+runtime/AstrBot-4.29.3/data/voice_cache/
+runtime/AstrBot-4.29.3/data/collected_stickers/*
+!runtime/AstrBot-4.29.3/data/collected_stickers/大肥鱼表情包/
+runtime/AstrBot-4.29.3/data/collected_stickers/大肥鱼表情包/*
+!runtime/AstrBot-4.29.3/data/collected_stickers/大肥鱼表情包/.gitkeep
+
+# NapCat / backend sessions
+runtime/napcat-shell/logs/
+runtime/napcat-shell/cache/
+runtime/napcat-shell/config/napcat_*.json
+runtime/napcat-shell/config/onebot11_*.json
+backend/qqmusic/browser_profile/
+backend/qqmusic/cookie.json
+backend/qqmusic/qr_*.txt
+
+# Source repository excludes bundled binaries; the complete package is attached
+# to the GitHub Release (v1.0.0).
+runtime/AstrBot-4.29.3/.venv/
+runtime/AstrBot-4.29.3/dashboard/
+runtime/AstrBot-4.29.3/dashboard.zip
+runtime/AstrBot-4.29.3/data/dist/
+runtime/AstrBot-4.29.3/data/stickers/
+runtime/napcat-shell/
+runtime/bin/
+data/music_library/*
+!data/music_library/.gitkeep
+
+# Local machine files
+.env
+*.env
+.vscode/
+.idea/
