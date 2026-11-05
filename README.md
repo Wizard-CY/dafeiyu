@@ -10,6 +10,11 @@
 
 仓库和 Release 都只保留最新版，旧版本不单独存档；升级就直接下最新的包。
 
+<!-- 截图放好之后取消注释，说明见 docs/SCREENSHOTS.md：
+![私聊](assets/screenshots/chat.png)
+![状态中心](assets/screenshots/status.png)
+-->
+
 先说名字，免得你看晕：项目叫大肥鱼，角色叫哦鲸鲸，仓库叫 dafeiyu，压缩包和目录叫 JingJing。都是同一个东西，早期没统一，现在改起来麻烦，就将就着用了。
 
 包里没有账号、聊天记录、好友记忆，也没有任何登录凭据。QQ 号、群号、API Key、后台密码、OneBot token，都得你自己填。不填就启动，它是不会说话的。
@@ -422,18 +427,21 @@ data/data_v4.db
 - 主人 QQ 不要写进群公告或公开文档。
 - 群只留一个，别让它被拉进陌生群。
 
-## 11. 第三方
+## 11. 许可和第三方
 
-- AstrBot 4.29.3，AGPL-3.0，许可证在 `runtime/AstrBot-4.29.3/LICENSE`。
-- NapCat / OneBot v11。
-- astrbot_plugin_listen_music。
-- edge-tts。
-- ffmpeg。
-- QQ 音乐后端。
+这个仓库按 AGPL-3.0 发布，全文在 [LICENSE](LICENSE)。GitHub 上会显示成 AGPL-3.0。
 
-各组件版权归各自作者，用之前看一下对应的许可证。QQ 账号、QQ 音乐账号和 API Key 都是你自己提供的。
+但包里不是所有东西都是 AGPL：
 
-仓库本身没挂 LICENSE，默认是保留权利；AstrBot 那部分是 AGPL-3.0，两者别混着理解。要二次分发，先看 [DISCLAIMER.md](DISCLAIMER.md)。
+- `runtime/AstrBot-4.29.3` 是 AstrBot 4.29.3，本来就走 AGPL-3.0，版权归 Soulter 和贡献者。
+- NapCat 用的是它自己的 Limited Redistribution License，禁止商用，再分发要带许可全文。
+- ffmpeg 是 GPLv3 构建，再分发要附 GPLv3 全文和源码获取方式。
+- `astrbot_plugin_listen_music` 上游没写许可证，严格说没有明确授权。
+- 其余组件和 Python 依赖各走各的许可。
+
+具体清单、版本和注意事项都在 [NOTICE.md](NOTICE.md)，许可证文本放在 `LICENSES/`。
+
+QQ 账号、QQ 音乐账号和 API Key 都是你自己提供的。要二次分发，先把 NOTICE 看完。
 
 ## 附：装好之后目录长这样
 
