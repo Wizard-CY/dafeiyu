@@ -33,7 +33,7 @@ backend/qqmusic/cookie.json
 backend/qqmusic/qr_*.txt
 
 # Source repository excludes bundled binaries; the complete package is attached
-# to the GitHub Release (v1.0.0).
+# to the GitHub Release (latest).
 runtime/AstrBot-4.29.3/.venv/
 runtime/AstrBot-4.29.3/dashboard/
 runtime/AstrBot-4.29.3/dashboard.zip

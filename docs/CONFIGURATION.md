@@ -14,7 +14,7 @@
 ```text
 runtime/AstrBot-4.29.3/data/plugins/dafeiyu_group/main.py   GROUP / GROUP_NAME
 runtime/AstrBot-4.29.3/data/plugins/dafeiyu_guard/main.py  ALLOWED_GROUPS
-scripts/start.ps1                                          -q 机器人QQ
+scripts/start.ps1                                          机器人 QQ（'1000000000'）
 scripts/status.pyw                                         状态中心显示
 ```
 
