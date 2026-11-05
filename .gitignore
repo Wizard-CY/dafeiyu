@@ -49,3 +49,4 @@ data/music_library/*
 *.env
 .vscode/
 .idea/
+scripts/paths.local.ps1

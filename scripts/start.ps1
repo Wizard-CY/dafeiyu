@@ -9,10 +9,39 @@ $env:DASHBOARD_HOST = '127.0.0.1'
 $env:PYTHONIOENCODING = 'utf-8'
 
 $statusScript = Join-Path $baseDir 'scripts\status.pyw'
-$pythonw = 'C:\Users\Admini\AppData\Local\Programs\Python\Python311\pythonw.exe'
+
+# ── 本机路径解析 ─────────────────────────────────────────────
+# 优先 dot-source 同目录的 paths.local.ps1（已加 .gitignore，不进仓库），
+# 没有就按 PATH / 常见位置自动探测。
+$pythonw = $null
+$nodeExe = $null
+$qqPath  = $null
+$localPaths = Join-Path $PSScriptRoot 'paths.local.ps1'
+if (Test-Path $localPaths) {
+    . $localPaths
+}
+
+if (-not $pythonw -or -not (Test-Path $pythonw)) {
+    $pythonw = (Get-Command pythonw.exe -ErrorAction SilentlyContinue).Source
+}
+if (-not $pythonw -or -not (Test-Path $pythonw)) {
+    $candidate = Join-Path $env:LOCALAPPDATA 'Programs\Python\Python311\pythonw.exe'
+    if (Test-Path $candidate) { $pythonw = $candidate }
+}
+
+if (-not $nodeExe -or -not (Test-Path $nodeExe)) {
+    $nodeExe = (Get-Command node.exe -ErrorAction SilentlyContinue).Source
+}
+
+if (-not $qqPath -or -not (Test-Path $qqPath)) {
+    foreach ($candidate in @('C:\Program Files\Tencent\QQNT\QQ.exe', 'D:\Program Files\Tencent\QQNT\QQ.exe', 'E:\QQ\QQ.exe')) {
+        if (Test-Path $candidate) { $qqPath = $candidate; break }
+    }
+}
+
 $statusRunning = Get-CimInstance Win32_Process -Filter "Name='pythonw.exe'" -ErrorAction SilentlyContinue |
     Where-Object { $_.CommandLine -match 'status\.pyw|大肥鱼状态' }
-if (-not $statusRunning -and (Test-Path $statusScript) -and (Test-Path $pythonw)) {
+if (-not $statusRunning -and (Test-Path $statusScript) -and $pythonw -and (Test-Path $pythonw)) {
     Start-Process -FilePath $pythonw -ArgumentList ('"' + $statusScript + '"') -WindowStyle Hidden
 }
 
@@ -29,14 +58,12 @@ if (-not (Test-Listening 6185)) {
 }
 
 $qqBackend = Join-Path $baseDir 'backend/qqmusic'
-$nodeExe = 'C:\Users\Admini\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\node\bin\node.exe'
-if ((Test-Path (Join-Path $qqBackend 'server.mjs')) -and -not (Test-Listening 3311)) {
+if ((Test-Path (Join-Path $qqBackend 'server.mjs')) -and -not (Test-Listening 3311) -and $nodeExe -and (Test-Path $nodeExe)) {
     Start-Process -FilePath $nodeExe -ArgumentList 'server.mjs' -WorkingDirectory $qqBackend -WindowStyle Hidden -RedirectStandardOutput (Join-Path $qqBackend 'server.log') -RedirectStandardError (Join-Path $qqBackend 'server-error.log')
 }
 
-if (-not (Test-Listening 6099)) {
+if (-not (Test-Listening 6099) -and $qqPath -and (Test-Path $qqPath)) {
     $isAdmin = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-    $qqPath = 'E:\QQ\QQ.exe'
     if ($isAdmin) {
         $env:NAPCAT_PATCH_PACKAGE = Join-Path $napDir 'qqnt.json'
         $env:NAPCAT_LOAD_PATH = Join-Path $napDir 'loadNapCat.js'
