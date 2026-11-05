@@ -23,7 +23,7 @@
 
 > 只适合自己玩。不保证可用，也不对账号、数据或第三方服务负责。完整条款见 [DISCLAIMER.md](DISCLAIMER.md)。
 
-`docs/` 里还有三份按主题拆开的短文档（安装、配置、常见问题），内容以这份为准。
+`docs/` 里还有几份按主题拆开的短文档（安装、配置、常见问题、截图说明），内容以这份为准。
 
 装的时候最容易卡住的地方，我放在第 9 节了。
 
@@ -58,9 +58,9 @@
 | 1000000001 | 主人 QQ | 你自己的号 |
 | 1000000002 | 群号 | 要拉它进的群 |
 
-用 VS Code 打开整个目录，全局替换。只替换这三个十位数本身，别开「正则」或者「替换所有数字」之类的开关——源码里别的数字可能刚好撞上。
+用 VS Code 打开整个目录，Ctrl+Shift+H 全局替换。搜索范围只圈 `runtime/**` 和 `scripts/**`，把 `README.md`、`docs/**`、`DISCLAIMER.md`、`NOTICE.md` 排除掉——这份 README 里也有这几个数，别一起替换，表格会花。
 
-这份 README 里也有这几个数，别一起替换，表格会花。
+两个开关注意一下：搜索面板里把「Use Ignore Files」取消勾选，不然 `data/` 下的插件文件会被跳过（它被 AstrBot 的 .gitignore 忽略了）；替换时只换这三个十位数本身，别开正则，源码里别的数字可能刚好撞上。
 
 带占位符的大概是这些地方：
 
@@ -115,7 +115,20 @@ runtime/AstrBot-4.29.3/data/cmd_config.json
 
 ## 3. 后台密码和 OneBot token
 
-后台账号是 `admin`，初始密码 `JingJing@2026`。配置里 `password_change_required` 已经是 `true`，登录后会提示你先改密码，别跳过——用默认密码挂着的后台，等于把机器人送人。
+后台账号是 `admin`。包里没有写死初始密码：`cmd_config.json` 里 `dashboard` 段的 `password`、`pbkdf2_password` 和 `jwt_secret` 都是空的，AstrBot 第一次启动会自己生成一个随机密码和 JWT 密钥，密码打在启动日志里：
+
+```
+Select-String startup.log "Initial password"
+```
+
+`startup.log` 在 `runtime/AstrBot-4.29.3/` 下。登录 `http://127.0.0.1:6185` 后系统会强制你先改密码（`password_change_required` 是 `true`），别跳过——用初始密码挂着的后台，等于把机器人送人。
+
+以后忘了密码想重置，用环境变量启动一次：
+
+```powershell
+$env:ASTRBOT_RESET_DASHBOARD_PASSWORD = '1'
+D:\JingJing\runtime\AstrBot-4.29.3\.venv\Scripts\python.exe D:\JingJing\runtime\AstrBot-4.29.3\main.py
+```
 
 `admins_id` 现在是空的，填上主人 QQ：
 
@@ -142,23 +155,19 @@ OneBot 的 token 包里没设。打开 NapCat WebUI（`http://127.0.0.1:6099`）
 
 参考配置在 `runtime/napcat-shell/config/onebot11.example.json`。
 
-## 4. 改本机路径
+## 4. 本机路径
 
-`scripts/start.ps1` 里要改三个路径。它们不在同一段，搜变量名：
-
-- `$pythonw` 在开头，系统 Python 的 pythonw，用来拉状态中心。
-- `$nodeExe` 在 QQ 音乐后端那段，指向 Node.js。
-- `$qqPath` 再往下，NapCat 那段，指向 QQ NT 的 QQ.exe。
-
-现在这三个值都还是我打包机器上的路径，直接跑会找不到：
+三个路径不用在 `start.ps1` 里硬改，脚本会自己找：`pythonw` 和 `node.exe` 按 PATH 和常见位置探测，QQ 的 `QQ.exe` 按常见安装位置探测。找不到时，在 `scripts/` 下新建 `paths.local.ps1`（这个文件已被 .gitignore 忽略，不会进仓库），按自己机器写三个值：
 
 ```powershell
-$pythonw = 'C:\Users\Admini\AppData\Local\Programs\Python\Python311\pythonw.exe'
-$nodeExe = 'C:\Users\Admini\.dsh\...\node.exe'
-$qqPath  = 'E:\QQ\QQ.exe'
+$pythonw = 'C:\Users\你的用户名\AppData\Local\Programs\Python\Python311\pythonw.exe'
+$nodeExe = 'C:\Program Files\nodejs\node.exe'
+$qqPath  = 'D:\QQ\QQ.exe'
 ```
 
-换成你自己机器上的。`$pythonw` 用系统 Python，不是 `.venv` 里那个。
+- `$pythonw` 用系统 Python，不是 `.venv` 里那个。
+- `$nodeExe` 只有点歌用得上，不点歌可以不填。
+- `$qqPath` 是 QQ NT 的 QQ.exe；路径不对，NapCat 起不来，启动结束会弹窗提示。
 
 ## 5. 检查环境，然后启动
 

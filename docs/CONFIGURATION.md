@@ -46,14 +46,10 @@ runtime/AstrBot-4.29.3/data/cmd_config.json
 
 ## 后台
 
-默认临时账号：
-
-```text
-用户名：admin
-密码：JingJing@2026
-```
-
-首次登录 `http://127.0.0.1:6185` 后立即修改。
+- 地址：`http://127.0.0.1:6185`
+- 用户名：`admin`
+- 初始密码：包内不写死。首次启动自动生成随机密码，打印在 `runtime/AstrBot-4.29.3/startup.log`（搜 `Initial password`），登录后系统强制修改。
+- 重置密码：清空 `cmd_config.json` 里 `dashboard` 段的 `password` 和 `pbkdf2_password` 再重启，或带环境变量 `ASTRBOT_RESET_DASHBOARD_PASSWORD=1` 启动一次。
 
 ## OneBot
 
