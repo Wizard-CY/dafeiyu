@@ -76,11 +76,11 @@ runtime/AstrBot-4.29.3/data/data_v4.db
 不要删除：
 
 ```text
-data/cmd_config.json
-data/dafeiyu_character.md
-data/dafeiyu_quota_config.json
-data/dafeiyu_voice.json
-data/dafeiyu_reconnect.json
+runtime/AstrBot-4.29.3/data/cmd_config.json
+runtime/AstrBot-4.29.3/data/dafeiyu_character.md
+runtime/AstrBot-4.29.3/data/dafeiyu_quota_config.json
+runtime/AstrBot-4.29.3/data/dafeiyu_voice.json
+runtime/AstrBot-4.29.3/data/dafeiyu_reconnect.json
 ```
 
 ---
