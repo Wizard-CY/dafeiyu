@@ -12,9 +12,7 @@
 
 ![对话示例（脱敏卡片）](assets/screenshots/chat.png)
 
-<!-- 状态中心截图补好后取消注释，说明见 docs/SCREENSHOTS.md：
 ![状态中心](assets/screenshots/status.png)
--->
 
 先说名字，免得你看晕：项目叫大肥鱼，角色叫哦鲸鲸，仓库叫 dafeiyu，压缩包和目录叫 JingJing。都是同一个东西，早期没统一，现在改起来麻烦，就将就着用了。
 
