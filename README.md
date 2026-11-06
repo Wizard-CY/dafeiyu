@@ -26,6 +26,8 @@
 
 装的时候最容易卡住的地方，我放在第 9 节了。
 
+下面所有命令都假设你把包解压到了 `D:\JingJing`；如果解压到别处，把命令里的路径换成你自己的。
+
 ## 开始之前
 
 系统得是 Windows 10 或 11，64 位。没有别的平台版本。
@@ -217,7 +219,7 @@ D:\JingJing\scripts\start.ps1
 
 或者双击 `scripts\start.cmd`。
 
-它会依次拉起 AstrBot、QQ 音乐后端、NapCat（会弹 QQ 登录窗）和状态中心托盘。已经在跑的端口会跳过，不会重复开。
+它会依次拉起 AstrBot、QQ 音乐后端（监听 3311）、NapCat（会弹 QQ 登录窗）和状态中心托盘。已经在跑的端口会跳过，不会重复开。
 
 NapCat 的 WebUI 在 `http://127.0.0.1:6099`，「网络配置」里填：
 
@@ -362,7 +364,7 @@ D:\JingJing\runtime\AstrBot-4.29.3\.venv\Scripts\python.exe D:\JingJing\scripts\
 - 技术问题：`我只会聊天，请联系主人处理`
 - token 投喂：`你真有这个心的话，那你联系我的主人吧`
 - 联系方式：先问「你要我主人的QQ号吗？」，对方同意才给
-- 剩余额度：`我还能发送N次消息。`
+- 剩余额度：`我还能发送N次消息。`（N 是实际剩余次数）
 
 这些在私聊的护栏里直接生效。群聊只用「主人称呼」那一条，不主动说主人是谁。
 
@@ -374,7 +376,7 @@ D:\JingJing\runtime\AstrBot-4.29.3\.venv\Scripts\python.exe D:\JingJing\scripts\
 
 1. 看任务栏右下角的 `^`，托盘图标可能被折叠了。
 2. 系统 Python 装了 `pystray` 和 `Pillow` 没有。
-3. 手动跑 `pythonw D:\JingJing\scripts\status.pyw` 看报什么错。
+3. 用 `python`（不是 `pythonw`）手动跑一遍 `D:\JingJing\scripts\status.pyw`，看控制台报什么错——`pythonw` 没有窗口，报错是看不见的。
 
 QQ 没连上：
 
@@ -457,14 +459,22 @@ QQ 账号、QQ 音乐账号和 API Key 都是你自己提供的。要二次分�
 D:\JingJing
 ├─ README.md
 ├─ DISCLAIMER.md
+├─ LICENSE
+├─ NOTICE.md
 ├─ .gitignore
 ├─ docs
 │  ├─ INSTALL.md
 │  ├─ CONFIGURATION.md
-│  └─ TROUBLESHOOTING.md
+│  ├─ TROUBLESHOOTING.md
+│  └─ SCREENSHOTS.md
+├─ LICENSES
+│  ├─ ffmpeg-LICENSE.txt
+│  ├─ NapCat-LICENSE.txt
+│  └─ Apache-2.0.txt
 ├─ assets
 │  ├─ icon.ico
-│  └─ persona.md
+│  ├─ persona.md
+│  └─ screenshots
 ├─ scripts
 │  ├─ start.ps1
 │  ├─ start.cmd

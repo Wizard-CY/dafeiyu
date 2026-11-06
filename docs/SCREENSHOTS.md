@@ -2,7 +2,7 @@
 
 README 首页的截图放在 `assets/screenshots/`：
 
-- `chat.png` —— 脱敏对话卡片（非原始 QQ 截图，不含昵称/头像/账号），源文件在 `D:\DaFeiYu\work\dafeiyu-source\docs\assets\chat-example.png`。
+- `chat.png` —— 脱敏对话卡片（非原始 QQ 截图，不含昵称/头像/账号），源 HTML/PNG 在本地资料目录，未进仓库。
 - `status.png` —— 状态中心窗口，「聊天程序」和「QQ 接入」正常；QQ 音乐 uin、群消息数、日期已打码。
 
 两张图都在 README 开头引用。以后换图的要求：
