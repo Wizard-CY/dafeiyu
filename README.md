@@ -1,6 +1,7 @@
 # 大肥鱼 · 安装与使用说明
 
 大肥鱼是一个跑在 QQ 上的 AI 聊天角色。底座是 AstrBot，QQ 这边通过 NapCat 走 OneBot v11，模型接 DeepSeek 的兼容接口。
+已入驻爱发电平台https://ifdian.net/a/DaFeiYu__YunShan_You，欢迎各位赞助，更感谢各位赞助！
 
 这套东西是从我自己在用的环境里整理出来的。仓库里放的是 AstrBot 源码、外层脚本和文档；`runtime/AstrBot-4.29.3/data` 被 AstrBot 自带的 `.gitignore` 挡掉了，插件、人设和配置都没进仓库，只在完整包里——所以 clone 下来是起不来的。
 
