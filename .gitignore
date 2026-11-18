@@ -14,7 +14,8 @@ runtime/logs/
 诊断报告.txt
 2.0版本/
 2.0版本.zip
-JingJing-full-2.0.0.zip
+JingJing-full-*.zip
+dafeiyu-*-full.zip
 runtime/AstrBot-4.29.3/data/data_v4.db
 runtime/AstrBot-4.29.3/data/data_v4.db-*
 runtime/AstrBot-4.29.3/data/memory/

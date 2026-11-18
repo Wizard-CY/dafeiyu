@@ -59,7 +59,7 @@ git filter-repo --replace-text ../scrub.txt
 
 # 4. 检查
 git log --all -S '旧密码的原文' --oneline   # 应该没有输出
-git grep -n 'JingJing'                      # 应该没有输出
+git log --all -S 'JingJing@' --oneline      # 应该没有输出
 
 # 5. 重新打 tag、force push
 git tag -a v2.0.0 -m "2.0.0"
