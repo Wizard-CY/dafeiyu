@@ -1,0 +1,5 @@
+name: dafeiyu_voice
+display_name: 大肥鱼语音回复
+desc: 用 Edge TTS 把短回复变成语音条（默认关闭，可在配置里开）
+version: 1.0.0
+author: Local

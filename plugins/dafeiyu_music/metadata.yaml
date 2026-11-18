@@ -1,0 +1,4 @@
+name: dafeiyu_music
+desc: 结合最近聊天理解点歌（含这首/换一首等指代），QQ音乐优先、B站兜底；短时间多条只放一首
+version: 1.1.0
+author: Local

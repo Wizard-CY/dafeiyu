@@ -1,0 +1,5 @@
+name: dafeiyu_search
+display_name: 大肥鱼联网搜索
+desc: 只在对方面提出联网/搜索时启用；私聊走 LLM 请求注入，群聊走群提示词
+version: 1.0.0
+author: Local

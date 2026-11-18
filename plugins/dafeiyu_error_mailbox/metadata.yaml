@@ -1,0 +1,9 @@
+name: dafeiyu_error_mailbox
+display_name: 错误信箱
+desc: 收集防御触发、插件报错等异常事件，在状态中心以邮件形式展示
+version: 1.0.0
+author: Local
+
+views:
+  - name: mailbox
+    title: 报错待办

@@ -1,0 +1,9 @@
+name: dafeiyu_broadcast
+display_name: 大肥鱼广播
+desc: 向选中的私聊用户或群聊统一发送消息
+version: 1.0.0
+author: Local
+
+views:
+  - name: broadcast
+    title: 广播消息

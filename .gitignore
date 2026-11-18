@@ -57,3 +57,6 @@ data/music_library/*
 .vscode/
 .idea/
 scripts/paths.local.ps1
+
+# release staging
+dist/

@@ -1,0 +1,5 @@
+name: dafeiyu_memory
+display_name: 大肥鱼长期记忆
+desc: 由状态中心手动触发，从私聊/群聊提炼长期记忆（不进群、不带私聊内容）
+version: 1.1.0
+author: Local

@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "display_name": "错误信箱"
+  },
+  "views": {
+    "mailbox": {
+      "title": "报错待办"
+    }
+  },
+  "pages": {
+    "mailbox": {
+      "title": "报错待办"
+    }
+  }
+}

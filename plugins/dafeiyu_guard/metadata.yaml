@@ -1,0 +1,5 @@
+name: dafeiyu_guard
+display_name: 大肥鱼越界拦截
+desc: 严重越界内容只回一次警告并永久只读不回；轻度玩笑不拦
+version: 1.0.0
+author: Local

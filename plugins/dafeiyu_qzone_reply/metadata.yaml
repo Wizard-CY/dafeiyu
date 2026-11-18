@@ -1,0 +1,5 @@
+name: dafeiyu_qzone_reply
+display_name: 大肥鱼空间评论回复
+desc: 回复她自己空间动态下的评论，同一动态同一人只回一次，鼓励用 emoji
+version: 1.0.0
+author: Local

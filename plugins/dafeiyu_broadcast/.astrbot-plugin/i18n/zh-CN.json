@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "display_name": "大肥鱼广播"
+  },
+  "views": {
+    "broadcast": {
+      "title": "广播消息"
+    }
+  },
+  "pages": {
+    "broadcast": {
+      "title": "广播消息"
+    }
+  }
+}

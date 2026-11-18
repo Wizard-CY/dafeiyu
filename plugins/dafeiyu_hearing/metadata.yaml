@@ -1,0 +1,5 @@
+name: dafeiyu_hearing
+display_name: 大肥鱼听不了语音
+desc: 有人发语音条时，礼貌说一句"听不了 打字呗"，同一会话半小时最多一次
+version: 1.0.0
+author: Local

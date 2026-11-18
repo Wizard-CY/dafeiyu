@@ -1,0 +1,5 @@
+name: dafeiyu_quota
+display_name: 大肥鱼好友额度
+desc: 除主人外的好友每天最多回复 75 条，第一次回复时告知；新好友立即回复
+version: 1.0.0
+author: Local

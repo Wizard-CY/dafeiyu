@@ -1,0 +1,5 @@
+name: dafeiyu_watchdog
+display_name: 大肥鱼连接看门狗
+desc: 每分钟探测 QQ 连接，掉线与恢复都留记录，恢复时私聊通知主人
+version: 1.0.0
+author: Local

@@ -1,0 +1,5 @@
+name: dafeiyu_diary
+display_name: 大肥鱼每日空间日记
+desc: 每天北京时间21点生成并发布一条空间动态；本地图库配图由模型按正文自选、两周内不重复
+version: 1.2.0
+author: Local
