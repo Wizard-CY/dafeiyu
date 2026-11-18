@@ -1,4 +1,4 @@
-# 大肥鱼整合包 · YunShan You
+# 大肥鱼 2.0 整合包 · YunShan_You（悠云山）
 # 仅忽略运行时缓存和敏感状态；发布包本身仍保留完整运行框架。
 
 __pycache__/
@@ -10,6 +10,11 @@ Thumbs.db
 
 # Runtime state / secrets
 runtime/backups/
+runtime/logs/
+诊断报告.txt
+2.0版本/
+2.0版本.zip
+JingJing-full-2.0.0.zip
 runtime/AstrBot-4.29.3/data/data_v4.db
 runtime/AstrBot-4.29.3/data/data_v4.db-*
 runtime/AstrBot-4.29.3/data/memory/
@@ -40,6 +45,8 @@ runtime/AstrBot-4.29.3/dashboard.zip
 runtime/AstrBot-4.29.3/data/dist/
 runtime/AstrBot-4.29.3/data/stickers/
 runtime/napcat-shell/
+runtime/python/
+runtime/installer/
 runtime/bin/
 data/music_library/*
 !data/music_library/.gitkeep

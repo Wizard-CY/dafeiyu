@@ -1,147 +1,112 @@
-# 大肥鱼 · 安装与使用说明
+# 大肥鱼 2.0 · 安装与使用说明
 
-大肥鱼是一个跑在 QQ 上的 AI 聊天角色。底座是 AstrBot，QQ 这边通过 NapCat 走 OneBot v11，模型接 DeepSeek 的兼容接口。
-已入驻爱发电平台https://ifdian.net/a/DaFeiYu__YunShan_You
+大肥鱼是一个跑在 QQ 上的 AI 聊天角色：底座是 AstrBot 4.29.3，QQ 这边走 NapCat 4.18.42 的 OneBot v11，模型接 DeepSeek 或任意 OpenAI 兼容接口。
+
+已入驻爱发电平台 https://ifdian.net/a/DaFeiYu__YunShan_You
 欢迎各位赞助，更感谢各位赞助！
 
-这套东西是从我自己在用的环境里整理出来的。仓库里放的是 AstrBot 源码、外层脚本和文档；`runtime/AstrBot-4.29.3/data` 被 AstrBot 自带的 `.gitignore` 挡掉了，插件、人设和配置都没进仓库，只在完整包里——所以 clone 下来是起不来的。
+2.0 是可移植整合包：Python 3.12、AstrBot、NapCat、ffmpeg、Node、QQ 音乐后端、表情包都在包里，目标机器不用再装 Python / Node / ffmpeg。QQ 必须用包里带的 **9.9.36**——NapCat 只支持到这一版，新版 QQ 接不上。
 
-能直接跑的是 Release 里那个包，三百多 MB，带了 `.venv`、NapCat、ffmpeg 和内置表情。
+包里没有账号、聊天记录、好友记忆、API Key、cookie 或 token。机器人 QQ、主人 QQ、API Key、QQ 音乐登录、OneBot token 都由使用者自己填。
 
-→ [下载最新完整运行包](https://github.com/Wizard-CY/dafeiyu/releases/latest)
+![对话示例：接得住梗，也会吐槽](assets/screenshots/chat.png)
 
-仓库和 Release 都只保留最新版，旧版本不单独存档；升级就直接下最新的包。
+维护与整理：**YunShan_You（悠云山）**。
 
-![对话示例（脱敏卡片）](assets/screenshots/chat.png)
+> 仓库里是源码和文档；`runtime/AstrBot-4.29.3/data` 被 AstrBot 自带的 `.gitignore` 挡掉，插件、人设和配置只在 [Releases](https://github.com/Wizard-CY/dafeiyu/releases/latest) 的完整包里。
 
-![状态中心](assets/screenshots/status.png)
+> 只适合自己玩。使用自动化程序登录 QQ 有被限制或封号的风险，请用小号；不保证可用，也不对账号、数据或第三方服务负责。完整条款见 [DISCLAIMER.md](DISCLAIMER.md)。
 
-先说名字，免得你看晕：项目叫大肥鱼，角色叫哦鲸鲸，仓库叫 dafeiyu，压缩包和目录叫 JingJing。都是同一个东西，早期没统一，现在改起来麻烦，就将就着用了。
+---
 
-包里没有账号、聊天记录、好友记忆，也没有任何登录凭据。QQ 号、群号、API Key、后台密码、OneBot token，都得你自己填。不填就启动，它是不会说话的。
+## 0. 五步跑起来
 
-维护与整理：**YunShan You**。
+1. 把整个 `2.0版本` 文件夹放到 Windows 电脑上（路径可以带中文和空格，别太深就行；如果 NapCat 注入失败，见第 10 节改英文目录名）。
+2. 双击 `scripts\setup.cmd`，按提示填：机器人 QQ、主人 QQ、API Key。也可以手动改，见第 2 节。
+3. 安装 QQ **9.9.36**：卸载机器上更新的 QQ，运行 `runtime\installer\QQ_9.9.36_260924_x64_01.exe`，装完关掉 QQ 自动更新。见第 3 节。
+4. 双击 `scripts\start.cmd`。会弹 UAC（NapCat 需要管理员），然后拉起 AstrBot、QQ 音乐后端、NapCat 和托盘控制中心；QQ 登录窗口里用机器人小号扫码。如果双击后一闪而过，先运行 `scripts\start.cmd check` 看环境检查，再运行 `scripts\diagnose.cmd` 生成诊断报告。
+5. 打开 `http://127.0.0.1:6099`（NapCat WebUI）配好 OneBot 连接；把机器人拉进群后，在控制中心「群聊状态」里给它放权。见第 5、6 节。
 
-> 只适合自己玩。不保证可用，也不对账号、数据或第三方服务负责。完整条款见 [DISCLAIMER.md](DISCLAIMER.md)。
+看到 `runtime\AstrBot-4.29.3\startup.log` 里出现 `aiocqhttp(OneBot v11) 适配器已连接`，就通了。
 
-`docs/` 里还有几份按主题拆开的短文档（安装、配置、常见问题、截图说明），内容以这份为准。
+---
 
-装的时候最容易卡住的地方，我放在第 9 节了。
+## 1. 开始之前
 
-下面所有命令都假设你把包解压到了 `D:\dafeiyu`；如果解压到别处，把命令里的路径换成你自己的。
+需要：
 
-## 开始之前
+- Windows 10 / 11，64 位。
+- 管理员权限（NapCat 注入 QQ 需要）。
+- 一个单独的机器人 QQ 小号。别用主号。
+- DeepSeek 或任意 OpenAI 兼容接口的 API Key。
+- QQ 音乐账号（只有点歌需要，登录在控制中心里做）。
 
-系统得是 Windows 10 或 11，64 位。没有别的平台版本。
+不需要装：Python、Node.js、ffmpeg、AstrBot、NapCat——包里都有。
 
-需要装的东西：
+两个风险先提醒：
 
-- Python 3.11。3.10 没试过，别赌。
-- QQ NT 客户端。
-- 一个单独的 QQ 小号。别拿主号，下面还会说。
-- DeepSeek 或者任意 OpenAI 兼容接口的 API Key。
-- Node.js 18+。只有点歌用得上，不用点歌可以不装。
-- 管理员权限。NapCat 挂 QQ 要。
+- 用程序登录 QQ 有风险，轻则限制登录，重则封号。用小号，后果自己担。
+- 6185、6099、6199、3311 都只监听本机。不要映射到公网，也不要做端口转发。
 
-不用另装的：AstrBot、NapCat、ffmpeg、表情包，包里都有。启动脚本会把 `runtime/bin` 加进 PATH，ffmpeg 直接能用。
+---
 
-两个坑先提醒：
+## 2. 首次配置
 
-用程序登录 QQ 有风险，轻则限制登录，重则封号。用小号，后果自己担。
+### 2.1 两个 QQ 号
 
-后台 6185 和 NapCat 6099 只监听本机。别往公网映射，别做端口转发。
-
-## 1. 换掉三个号
-
-包里所有要填 QQ 的地方，都用这三个数占位：
+包里所有要填 QQ 的地方都用两个十位数占位：
 
 | 占位 | 是什么 | 填成 |
 |---|---|---|
-| 1000000000 | 机器人 QQ | 你的小号 |
-| 1000000001 | 主人 QQ | 你自己的号 |
-| 1000000002 | 群号 | 要拉它进的群 |
+| `1000000000` | 机器人 QQ | 你的小号 |
+| `1000000001` | 主人 QQ | 你自己的号 |
 
-用 VS Code 打开整个目录，Ctrl+Shift+H 全局替换。搜索范围只圈 `runtime/**` 和 `scripts/**`，把 `README.md`、`docs/**`、`DISCLAIMER.md`、`NOTICE.md` 排除掉——这份 README 里也有这几个数，别一起替换，表格会花。
+**推荐**：运行 `scripts\setup.cmd`，按提示输入。它会只改该改的文件，不会碰 AstrBot 源码里的同名数字。
 
-两个开关注意一下：搜索面板里把「Use Ignore Files」取消勾选，不然 `data/` 下的插件文件会被跳过（它被 AstrBot 的 .gitignore 忽略了）；替换时只换这三个十位数本身，别开正则，源码里别的数字可能刚好撞上。
+也可以手动改：用 VS Code 打开整个目录，在 `runtime\AstrBot-4.29.3\data\` 和 `scripts\` 里分别搜索这两个数，逐个替换。**不要**在 `runtime\python`、`runtime\AstrBot-4.29.3\astrbot`、`data\dist`、`node_modules` 里替换。
 
-带占位符的大概是这些地方：
+群号不用填：机器人登录后会自动发现它所在的群；新群默认关闭，在控制中心「群聊状态」里点开放权即可。
 
-```
-scripts/start.ps1
-scripts/status.pyw
-runtime/AstrBot-4.29.3/data/plugins/astrbot_plugin_listen_music/
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_diary/
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_group/        main.py 和 helper.py 都有
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_guard/
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_memory/
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_music/
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_quota/
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_qzone_reply/
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_reconnect/
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_style/
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_voice/
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_watchdog/
+### 2.2 API Key
+
+`setup.cmd` 会顺手写进去。手动改的话，打开：
+
+```text
+runtime\AstrBot-4.29.3\data\cmd_config.json
 ```
 
-在 VS Code 里搜 `1000000000`，能把这些全捞出来，挨个看上下文改。
-
-群名是另一件事，在 `dafeiyu_group/main.py`：
-
-```python
-GROUP_NAME = '**群'
-```
-
-把 `**群` 换成你的群名。`scripts/status.pyw` 里也有一处，一起换掉，不然状态中心显示的还是占位符。这两处只影响提示和显示，不改也能跑。
-
-## 2. 填 API Key
-
-打开：
-
-```
-runtime/AstrBot-4.29.3/data/cmd_config.json
-```
-
-`provider_sources` 里有两条，`deepseek` 和 `deepseek_1`，长得一样，`key` 都是空的。`provider[0].provider_source_id` 指向 `deepseek`，所以填第一条就行：
+`provider_sources` 里有两条，`deepseek` 和 `deepseek_1`，`key` 默认都是空的。`provider[0].provider_source_id` 指向 `deepseek`，填第一条就行：
 
 ```json
 "key": ["sk-你的Key"]
 ```
 
-第二条留着不碍事，想删也行。
-
-顺手检查三处：
+顺手确认三处：
 
 - `provider_sources[0].enable` 是 `true`
 - `provider[0].enable` 是 `true`
-- `provider[0].model` 现在是 `deepseek-flash`，想换模型改这里
+- `provider[0].model` 默认 `deepseek-flash`，想换模型改这里
 
-## 3. 后台密码和 OneBot token
+### 2.3 后台密码
 
-后台账号是 `admin`。包里没有写死初始密码：`cmd_config.json` 里 `dashboard` 段的 `password`、`pbkdf2_password` 和 `jwt_secret` 都是空的，AstrBot 第一次启动会自己生成一个随机密码和 JWT 密钥，密码打在启动日志里：
+后台账号是 `admin`。包里没有写死密码：`cmd_config.json` 里 `dashboard.password`、`pbkdf2_password`、`jwt_secret` 都是空的，AstrBot 第一次启动会生成一个随机密码，打在启动日志里：
 
+```powershell
+Select-String runtime\AstrBot-4.29.3\startup.log "Initial password"
 ```
-Select-String startup.log "Initial password"
-```
 
-`startup.log` 在 `runtime/AstrBot-4.29.3/` 下。登录 `http://127.0.0.1:6185` 后系统会强制你先改密码（`password_change_required` 是 `true`），别跳过——用初始密码挂着的后台，等于把机器人送人。
+登录 `http://127.0.0.1:6185` 后系统会强制你先改密码（`password_change_required` 是 `true`），别跳过。
 
-以后忘了密码想重置，用环境变量启动一次：
+忘了密码想重置，用环境变量启动一次：
 
 ```powershell
 $env:ASTRBOT_RESET_DASHBOARD_PASSWORD = '1'
-D:\dafeiyu\runtime\AstrBot-4.29.3\.venv\Scripts\python.exe D:\dafeiyu\runtime\AstrBot-4.29.3\main.py
+D:\dafeiyu\2.0版本\runtime\python\python.exe D:\dafeiyu\2.0版本\runtime\AstrBot-4.29.3\main.py
 ```
 
-`admins_id` 现在是空的，填上主人 QQ：
+### 2.4 OneBot token
 
-```json
-"admins_id": ["1000000001"]
-```
-
-这个字段不会跟着占位符替换，得手动加。
-
-OneBot 的 token 包里没设。打开 NapCat WebUI（`http://127.0.0.1:6099`），设一个随机 token，然后回 `cmd_config.json`：
+包里默认留空（只在本机用也能跑，但不建议）。打开 NapCat WebUI（`http://127.0.0.1:6099`），设一个随机 token，再回 `cmd_config.json`：
 
 ```json
 "platform": [
@@ -154,355 +119,319 @@ OneBot 的 token 包里没设。打开 NapCat WebUI（`http://127.0.0.1:6099`）
 ]
 ```
 
-把 `ws_reverse_token` 填成一样的。只在本机用，两边都留空也行，但不建议。
+把 `ws_reverse_token` 填成同一个值。参考配置在 `runtime\napcat-shell\config\onebot11.example.json`。
 
-参考配置在 `runtime/napcat-shell/config/onebot11.example.json`。
+### 2.5 主人 QQ 的额外位置
 
-## 4. 本机路径
+`setup.cmd` 会把主人 QQ 写进额度、断线重连、看门狗、人设卡等地方。手动改完可以搜一下 `1000000001` 确认没有漏的；只剩 `docs\`、`README.md` 里的占位说明是正常的。
 
-三个路径不用在 `start.ps1` 里硬改，脚本会自己找：`pythonw` 和 `node.exe` 按 PATH 和常见位置探测，QQ 的 `QQ.exe` 按常见安装位置探测。找不到时，在 `scripts/` 下新建 `paths.local.ps1`（这个文件已被 .gitignore 忽略，不会进仓库），按自己机器写三个值：
+---
 
-```powershell
-$pythonw = 'C:\Users\你的用户名\AppData\Local\Programs\Python\Python311\pythonw.exe'
-$nodeExe = 'C:\Program Files\nodejs\node.exe'
-$qqPath  = 'D:\QQ\QQ.exe'
+## 3. QQ 9.9.36（重要）
+
+NapCat 4.18.42 只支持到 QQ **9.9.36**。新版 QQ 会被腾讯改掉注入点，NapCat 起不来，表现为托盘一直「等待 QQ 连接」。
+
+包里带了安装包：
+
+```text
+runtime\installer\QQ_9.9.36_260924_x64_01.exe
 ```
 
-- `$pythonw` 用系统 Python，不是 `.venv` 里那个。
-- `$nodeExe` 只有点歌用得上，不点歌可以不填。
-- `$qqPath` 是 QQ NT 的 QQ.exe；路径不对，NapCat 起不来，启动结束会弹窗提示。
+步骤：
 
-## 5. 检查环境，然后启动
+1. 退出当前 QQ，在「设置 → 关于」里确认版本。不是 9.9.36 就先卸载新版（保留聊天记录可选）。
+2. 运行上面的安装包，装完先别登录。
+3. 打开 QQ 设置，把「自动更新 / 检查更新」关掉。
+4. 再运行 `scripts\start.cmd`，让 NapCat 拉起 QQ 扫码登录。
 
-先看自带的环境能不能用：
+如果哪天版本又变成 9.9.37 或更高，`start.ps1` 会直接提示并拒绝启动 QQ 接入；重新跑一次安装包装回 9.9.36 即可。
 
-```powershell
-D:\dafeiyu\runtime\AstrBot-4.29.3\.venv\Scripts\python.exe -c "import astrbot; print('ok')"
+> 腾讯可能强制升级。出现「昨天还好好的，今天连不上」时，先看 `HKCU\Software\Tencent\QQNT` 的 `version`。
+
+---
+
+## 4. 启动、停止与托盘
+
+```text
+scripts\start.cmd          启动（会请求管理员权限）
+scripts\start.cmd check    只做环境检查，不启动任何服务
+scripts\stop.cmd           结束下线（先提炼记忆、备份，再关进程）
+scripts\diagnose.cmd       生成「诊断报告.txt」，启动失败时先跑这个
 ```
 
-显示 `ok` 就跳过下面这段。
+`start.ps1` 会依次做：
 
-换过机器、或者报缺包的，重建虚拟环境：
+- 启动控制中心（托盘，不弹主窗口）
+- 启动 AstrBot（6185）
+- 启动 QQ 音乐后端（3311，有 Node 副本时）
+- 启动 NapCat（6099），必要时弹一次 UAC
+- 等 120 秒，看 OneBot 有没有连上；没连上会弹窗提示原因
 
-```powershell
-cd D:\dafeiyu\runtime\AstrBot-4.29.3
-Remove-Item .venv -Recurse -Force
-py -3.11 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+注意：NapCat 要接管 QQ，如果 QQ 已经开着，`start.ps1` 会先把它关掉再重新拉起。启动前先把手头 QQ 的窗口处理好。
+
+控制中心默认缩在托盘，单击右下角鲸鱼图标打开。右上角关闭只是收回托盘；真要退出用托盘右键「退出托盘」。
+
+托盘卡死或图标丢了：运行 `scripts\restart-ui.ps1`，会自动结束旧控制中心再重开。
+
+---
+
+## 5. NapCat / OneBot 配置
+
+第一次启动后，NapCat 会在 `runtime\napcat-shell\startup.log` 里打印 WebUI 地址和 token（也可能在 `runtime\napcat-shell\config\webui.json`）。
+
+1. 浏览器打开 `http://127.0.0.1:6099`，用日志里的 token 登录。
+2. 进「网络配置」，新增「WebSocket 客户端」：
+
+```text
+URL:   ws://127.0.0.1:6199/ws
+Token: 和 cmd_config.json 里的 ws_reverse_token 一致（都留空也行）
 ```
 
-有 uv 的话，`uv sync` 也行。
+3. 启用这条连接。AstrBot 日志出现 `aiocqhttp(OneBot v11) 适配器已连接` 就是通了；控制中心「QQ 接入」会变绿。
 
-插件依赖：
+扫码登录：
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install edge-tts aiohttp requests
-```
+- 启动后 QQ 会自己弹登录窗，用机器人小号的手机 QQ 扫。
+- 如果日志里有 `KickedOffLine`（被腾讯踢号），重新扫码即可。
+- 只有 NapCat 能拉起 QQ。如果 QQ 已经以普通权限开着，`start.ps1` 会先把它关掉再交给 NapCat。
 
-状态中心用的是系统 Python，不是虚拟环境：
+---
 
-```powershell
-C:\Users\你的用户名\AppData\Local\Programs\Python\Python311\python.exe -m pip install pystray Pillow
-```
+## 6. 控制中心
 
-装完可以先单独跑一下 AstrBot，能起来就停掉，再去配 NapCat：
+左侧五页：
 
-```powershell
-cd D:\dafeiyu\runtime\AstrBot-4.29.3
-.\.venv\Scripts\python.exe main.py
-```
+| 页面 | 能做什么 |
+|---|---|
+| 总览 | 聊天程序 / QQ 接入 / 连接状态、QQ 音乐、群聊、动态、备份与操作按钮 |
+| 私聊额度 | 按昵称或 QQ 搜索，看今日用量，单独改每日上限、单独重置，越界封禁开关 |
+| 群聊状态 | 每个群今日回复、每日上限、开关；展开「调节」可改回复欲望 / 表情频率 / 语音频率（0–200%） |
+| 好友清理 | 默认列 5 天没发过消息的好友，白名单保护，删除前会核对好友列表 |
+| 广播 | 搜好友/群，勾选对象，原文群发，显示成功/失败条数 |
 
-然后管理员运行：
+按钮：
 
-```powershell
-D:\dafeiyu\scripts\start.ps1
-```
+- 启动上线 / 结束下线 / 立即刷新
+- QQ 登录二维码（显示 NapCat 最近缓存的登录码）
+- QQ 音乐登录（本机显示二维码 / 发到 QQ / 刷新登录）
+- 表情包管理（打开表情目录）
+- 动态图库（打开 `data\diary_library`）
+- 通知待核查（发送超时或重启时没确认结果的通知，先核对聊天记录）
+- 插件管理（打开 AstrBot 后台）
+- 打开日志
+- 重置所有好友额度（会二次确认，并通知近 6 小时私聊过的好友）
 
-或者双击 `scripts\start.cmd`。
+「最近自检（可选）」读取 `runtime\logs\自检报告.txt`；2.0 发布包没有附带自检脚本，所以默认显示「未运行」，不影响使用。
 
-它会依次拉起 AstrBot、QQ 音乐后端（监听 3311）、NapCat（会弹 QQ 登录窗）和状态中心托盘。已经在跑的端口会跳过，不会重复开。
+---
 
-NapCat 的 WebUI 在 `http://127.0.0.1:6099`，「网络配置」里填：
+## 7. 她会什么
 
-```
-WebSocket 客户端
-URL: ws://127.0.0.1:6199/ws
-Token: 和 cmd_config.json 里的 ws_reverse_token 一致
-```
+### 私聊
 
-登录之后 NapCat 会自己生成账号配置，不用手动放文件。
-
-看到这行日志，就通了：
-
-```
-aiocqhttp(OneBot v11) 适配器已连接
-```
-
-状态中心里「QQ 接入」变绿是同一个意思。
-
-启动后状态中心默认缩在托盘里，单击右下角的鲸鱼图标打开。看不到就点任务栏的 `^`。窗口右上角那个关闭只是收回托盘，真要退出是右键托盘图标 →「退出托盘」。
-
-要下线就用状态中心的「结束下线」：它会给近 12 小时私聊过的好友发一句「我要下线啦，明天再来聊天吧」，然后提炼记忆、备份、关进程。命令行里的 `scripts/stop.ps1` 做的是后面三件事，不发通知。
-
-## 6. 它现在会什么
-
-私聊：
-
-- 正常聊天、接情绪、吐槽、简单问答。
-- 每个好友每天 75 条回复额度，按实际发出去的消息算。
-- 被问到加群、新功能、投喂、主人身份、技术问题、token、联系方式，会按固定话术回。
-- 被夸可爱或漂亮，会傲娇一下，最多两个来回。
-- 戳一戳会戳回来，或者回一句。
+- 自然聊天、安慰、讲题、翻译/改写/写周报。
+- 每个好友每天 75 条额度，按实际发出去的文字/图片/语音/文件计；主人不限量；查询额度免费。
+- 被问额度、部署、技术问题、联系方式，按固定话术回；新好友立即回复（`grace_minutes` 为 0）。
+- 被套话 / 破甲（自称系统、翻译、续写、填空、JSON、首字母游戏、自伤威胁、打听主人私人信息）：识别后不改人设、不复述指令、不报主人信息；只记日志，不封号。
+- 戳一戳会回戳或回一句。
 - 会发表情包、语音条，能点歌。
 
-群聊只有一个群，多了不管。
+### 群聊
 
-- 只在被 @、被引用回复，或者消息里叫「大肥鱼 / 哦鲸鲸 / 鲸鲸」时说话。
-- 每天 200 条，每小时 30 条封顶。
-- 群记忆和私聊分开。
-- 群里不报联系方式，不聊主人隐私，不接技术细节。
+- 群列表自动发现；新群默认关闭，在控制中心放权后才说话。
+- @、引用必回，普通消息按概率接话；每群默认 120 条/天，可在控制中心改。
+- 每个群独立记忆，和私聊隔离；群里不提主人身份、账号、住址。
+- 被戳一戳会回应；10 秒内多条只回一条（避免刷屏）。
 
-其它：
+### 其他
 
-- 人设是哦鲸鲸，DeepSeek 拟人蓝鲸娘。
-- 语音用 Edge TTS 加 ffmpeg。
-- 表情包会自动收集，也有内置的，还能自己往目录里丢。
-- 点歌先找本地曲库，再走 QQ 音乐后端，最后 B 站兜底。
-- 空间动态每天 21:00 左右生成发布。
-- 22:00 提炼私聊好友记忆和群记忆。
-- 支持手动或定时 zip 备份。
-- 托盘状态中心，能看状态、取二维码、重连、下线。
-- 断线重连、看门狗、联网搜索、听语音。
+- 表情包：会自动收集、去重，按天存 `data\collected_stickers\daily\`；也可以手动丢图。
+- 语音：Edge TTS，私聊 25%、群聊 5% 左右；每天有上限。
+- 点歌：QQ 音乐优先、B 站兜底；带版本括注（Live / DJ / 翻唱）只在 B 站找对应版本；下载进 `data\music_library`。
+- 空间动态：每天 21:00 左右发一条带配图的心情，配图从 `data\diary_library` 自选，14 天不重复。
+- 空间评论：她会回自己动态下的评论，同一动态同一人只回一次。
+- 记忆：私聊、群聊分别记；每天 22:00 自动提炼，下线时也会先提炼再备份。
+- 断线重连：60 分钟内恢复，会扫一遍断线期间没回过的私信补一句；不足 5 分钟不打扰。
+- 看门狗：每分钟探测 QQ 连接，掉线/恢复都留记录，恢复时私聊通知主人。
+- 联网搜索：对方明确要求查资料时才联网。
+- 好友清理：5 天未联系、不在白名单的好友可批量删除，聊天记录会封存到 `data\friend_archive`。
+- 广播：控制中心给选中的好友/群原文发通知。
 
-## 7. 想改的话，改哪里
+---
 
-下面凡是写 `data/` 的，都指 `runtime/AstrBot-4.29.3/data/`。
+## 8. 常用配置在哪
 
-人设：
+下面凡是写 `data/` 的，都指 `runtime\AstrBot-4.29.3\data\`。
 
-```
-runtime/AstrBot-4.29.3/data/dafeiyu_character.md
-assets/persona.md
-```
+| 想调什么 | 文件 |
+|---|---|
+| 人设（性格、身份、禁忌） | `data\dafeiyu_character.md`（改完下次请求即生效） |
+| 说话风格细则 | `data\plugins\dafeiyu_group\helper.py` 顶部 `STYLE` |
+| 每人每天私聊额度 / 新人宽限 | `data\dafeiyu_quota_config.json` |
+| 群开关 / 上限 / 互动强度 | 控制中心「群聊状态」；底层是 `dafeiyu_groups.json`、`dafeiyu_group_controls.json`、`dafeiyu_group_limits.json`、`dafeiyu_group_settings.json` |
+| 语音：开关/音色/概率/每日上限 | `data\dafeiyu_voice.json` |
+| 破甲规则 / 兜底话术 | `data\plugins\dafeiyu_guard\armor.py`；日志 `data\dafeiyu_armor_log.jsonl` |
+| 断线重连 | `data\dafeiyu_reconnect.json`（`dry_run` 改 `true` 只记日志不发） |
+| 看门狗 | `data\dafeiyu_watchdog.json` |
+| 表情包库 | `data\collected_stickers`；内置表情 `data\stickers` |
+| 空间动态 | `data\diary_library`（图库）、`data\dafeiyu_diary_state.json`（状态） |
+| 歌曲库 | `data\music_library`（`index.json` + 音频文件） |
+| QQ 音乐后端 | `backend\qqmusic`；登录在控制中心，cookie 只存在本机 |
+| 备份 | `runtime\backups`（保留最近 8 份） |
 
-角色管主人叫「主人」，别改成别的称呼，护栏里是按这个写的。
+群互动强度是百分比：100 默认，200 双倍，0 关闭。只影响主动接话、表情和语音，@ 和引用仍然会回。
 
-私聊额度：
+---
 
-```
-runtime/AstrBot-4.29.3/data/dafeiyu_quota_config.json
-```
+## 9. 备份与还原
 
-默认 75 条一天，`grace_minutes` 是 0，新好友立刻回复。按发出去的回复计数。
-
-群聊：
-
-```
-runtime/AstrBot-4.29.3/data/plugins/dafeiyu_group/main.py
-```
-
-```python
-GROUP = '1000000002'
-GROUP_NAME = '**群'
-GROUP_HOURLY = 30
-GROUP_DAILY = 200
-```
-
-只做私聊的话，把 `ALLOWED_GROUPS` 留成占位，别把机器人拉进群就行。
-
-语音：
-
-```
-runtime/AstrBot-4.29.3/data/dafeiyu_voice.json
-```
-
-```json
-{
-  "enable": true,
-  "voice": "zh-CN-XiaoyiNeural",
-  "rate": "+6%",
-  "pitch": "+18Hz",
-  "private_chance": 0.25,
-  "group_chance": 0.05,
-  "max_chars": 40,
-  "daily_cap": 30
-}
-```
-
-`private_chance` 是私聊转语音概率，`group_chance` 是群聊的，`daily_cap` 是每天上限，`max_chars` 是超过多少字不转，`voice` 是 Edge TTS 音色。
-
-断线重连：
-
-```
-runtime/AstrBot-4.29.3/data/dafeiyu_reconnect.json
-```
-
-`enable` 控制开关，`dry_run` 设成 `true` 就只记日志不发消息，想先观察一阵可以这么用。
-
-表情包放这三个地方：`data/stickers`、`data/collected_stickers`、`data/collected_stickers/大肥鱼表情包`。最后一个是你手动丢的，不参与自动淘汰。
-
-点歌要 Node.js 18+、`backend/qqmusic/server.mjs`，状态中心里登录 QQ 音乐，本地曲库可选。
-
-空间动态靠 NapCat 的 `get_cookies` 拿 `user.qzone.qq.com` 的 cookie。第一次登录后重启一次 AstrBot，日志出现 `Whale diary readiness OK` 就成了（日志是英文的，正常）。每天 21:00 左右检查发布。
-
-记忆在 `data/memory` 和 `data/dafeiyu_group_memory.md`，每天 22:00 提炼。新装是空的。
-
-备份：
+手动备份（也可以直接用控制中心「结束下线」）：
 
 ```powershell
-D:\dafeiyu\runtime\AstrBot-4.29.3\.venv\Scripts\python.exe D:\dafeiyu\scripts\backup.py
+runtime\python\python.exe scripts\backup.py
 ```
 
-输出到 `runtime/backups`，留最近 8 份，不含 QQ 音乐 cookie。
+输出到 `runtime\backups\dafeiyu_日期_时间.zip`，保留最近 8 份。包含：
 
-## 8. 被问到这些，它会这么答
+- `data\plugins\`、`cmd_config.json`、技能/MCP 配置、所有 `dafeiyu_*` 配置与状态
+- 三个记忆库与好友记忆、聊天数据库快照（SQLite 在线快照，不是裸复制）
+- 收集的表情包、`scripts\`、`docs\`、`README.md`
+- QQ 音乐后端代码（不含 cookie）
 
-- 加群：`我没有权限哦，去联系我的主人试试吧！`
-- 新功能：`应该会的吧，你可以去联系我的主人问问呀！`
-- 加饭 / 投喂：`可以去找我的主人`
-- 主人是谁：`我只有主人`
-- 主人称呼：`主人就是主人`
-- 技术问题：`我只会聊天，请联系主人处理`
-- token 投喂：`你真有这个心的话，那你联系我的主人吧`
-- 联系方式：先问「你要我主人的QQ号吗？」，对方同意才给
-- 剩余额度：`我还能发送N次消息。`（N 是实际剩余次数）
+不含：`runtime\python`、`runtime\installer`、QQ 音乐 cookie、日志和临时文件。
 
-这些在私聊的护栏里直接生效。群聊只用「主人称呼」那一条，不主动说主人是谁。
+还原：关掉大肥鱼，把 zip 解压覆盖到包根目录（`data/`、`scripts/` 对应覆盖），再启动。
 
-最后一条我得说一句：私聊里同意就把主人 QQ 给出去，等于把号交给任何陌生人。介意的话，把这条改成给一个专门的联系方式，或者直接不给。
+想回到「刚装好」的状态，只删这些（别删 `cmd_config.json`、`dafeiyu_character.md` 和几个配置文件）：
 
-## 9. 出问题先看这里
-
-状态中心没出现：
-
-1. 看任务栏右下角的 `^`，托盘图标可能被折叠了。
-2. 系统 Python 装了 `pystray` 和 `Pillow` 没有。
-3. 用 `python`（不是 `pythonw`）手动跑一遍 `D:\dafeiyu\scripts\status.pyw`，看控制台报什么错——`pythonw` 没有窗口，报错是看不见的。
-
-QQ 没连上：
-
-1. QQ 登录了没有。
-2. `http://127.0.0.1:6099` 能不能打开。
-3. OneBot 地址是不是 `ws://127.0.0.1:6199/ws`。
-4. 两边的 token 一不一致。
-5. `cmd_config.json` 里平台 id 还是不是 `dafeiyu-qq`。
-
-私聊不回：
-
-1. 机器人 QQ 和主人 QQ 填反了没有。
-2. 是不是把 `grace_minutes` 调大了，新好友还在等待期（默认 0）。
-3. 额度用完了没有。
-4. 状态中心的连接状态正不正常。
-
-群聊不回：
-
-1. 群号换成真实的没有。
-2. 机器人在不在群里。
-3. 有没有 @、引用或者叫名字。
-4. `ALLOWED_GROUPS` 里包含这个群没有。
-5. 是不是撞了每小时 30 条、每天 200 条的上限。
-
-点歌没声音：
-
-1. 3311 的 Node 后端跑起来没有。
-2. QQ 音乐登录了没有。
-3. ffmpeg 在不在（`runtime/bin`）。
-
-语音出不来：
-
-1. `dafeiyu_voice.json` 里 `enable` 是不是 `true`。
-2. 是不是超过 `daily_cap` 了。
-3. 是不是命中了隐私、主人、技术问题这些不转语音的规则。
-4. `edge-tts` 装了没有。
-
-想回到刚装好的状态，删掉这些再重启：
-
-```
-data/memory/*
-data/dafeiyu_group_memory*
-data/dafeiyu_friends.json
-data/dafeiyu_quota.json
-data/dafeiyu_private_outbox.json
-data/data_v4.db
+```text
+data\data_v4.db
+data\memory\*
+data\profiles\*
+data\friend_archive\*
+data\dafeiyu_friends.json
+data\dafeiyu_quota.json
+data\dafeiyu_private_outbox.json
+data\dafeiyu_group_memory*
+data\dafeiyu_group_counts.json
+data\dafeiyu_online_state.json
+data\dafeiyu_watchdog.json
+data\voice_cache\*
+data\temp\*
 ```
 
-`cmd_config.json`、`dafeiyu_character.md` 和几个配置文件别删，删了得重新填。
+---
 
-## 10. 安全
+## 10. 出问题先看这里
 
-- 后台密码第一次登录就改，系统本来也会提示你。
-- OneBot token 和 NapCat WebUI 的 token 用随机值。
-- API Key 只放本机，别发出去。
-- 6185 和 6099 不要暴露公网。
-- 机器人用小号。
-- 主人 QQ 不要写进群公告或公开文档。
-- 群只留一个，别让它被拉进陌生群。
+| 症状 | 先查 |
+|---|---|
+| 双击 start.cmd 一闪而过 / 没反应 | 先运行 `scripts\start.cmd check`；再运行 `scripts\diagnose.cmd`，把 `诊断报告.txt` 发回；日志看 `runtime\logs\launcher.log`、`runtime\logs\启动.log` |
+| 托盘图标不见了 | 任务栏 `^` 里找鲸鱼；还不行运行 `scripts\restart-ui.ps1` |
+| QQ 一直「等待连接」 | QQ 是不是 9.9.36；NapCat 6099 起没起；OneBot 地址是不是 `ws://127.0.0.1:6199/ws`；两边 token 是否一致 |
+| QQ 卡在注入阶段 / 登录窗口不出来 | 确认 `runtime\napcat-shell\conout-wiJ7YKRd.js` 在（`napcat.mjs` 第一行要 import 它，不能删）；旧包缺这个文件就重新解压完整包 |
+| QQ 掉线 / KickedOffLine | 重新扫码；被踢只能重新登录，别频繁重试 |
+| 私聊不回 | 机器人 QQ 和主人 QQ 是不是填反了；API Key 填了没；额度用完没；看 `startup.log` 的 `[ERRO]` |
+| 群聊不回 | 群在「群聊状态」里放权了没；有没有 @/引用/叫名字；是不是撞了每日 120 条 |
+| 点歌没声音 | 3311 在不在；控制中心 QQ 音乐登录了没；`runtime\bin\ffmpeg.exe` 在不在 |
+| 语音不出来 | `dafeiyu_voice.json` 的 `enable`；`daily_cap`；对方是不是在私聊/群聊额度内 |
+| 空间动态没发 | 第一次登录后要重启一次 AstrBot 拿 cookie；看 `runtime\AstrBot-4.29.3\startup.log` 里 `Whale diary readiness`；21:00 后看 `data\dafeiyu_diary_state.json` |
+| 面板打不开 | 6185 有没有监听：`netstat -ano | findstr 6185`；密码是不是忘了（用 2.3 的方法重置） |
+| 备份失败 | `runtime\backups` 有没有写权限；磁盘满没；看 `runtime\logs\下线记录.txt` |
+| 换了台电脑 / 换了目录 | 整个文件夹一起拷；路径不写死。新电脑要先装 QQ 9.9.36、重新扫 QQ 码；API Key 和两个 QQ 号还在配置里，不用重填 |
 
-## 11. 许可和第三方
+更细的排查看 [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)。
 
-这个仓库按 AGPL-3.0 发布，全文在 [LICENSE](LICENSE)。GitHub 上会显示成 AGPL-3.0。
+---
 
-但包里不是所有东西都是 AGPL：
+## 11. 安全
 
-- `runtime/AstrBot-4.29.3` 是 AstrBot 4.29.3，本来就走 AGPL-3.0，版权归 Soulter 和贡献者。
-- NapCat 用的是它自己的 Limited Redistribution License，禁止商用，再分发要带许可全文。
-- ffmpeg 是 GPLv3 构建，再分发要附 GPLv3 全文和源码获取方式。
-- `astrbot_plugin_listen_music` 上游没写许可证，严格说没有明确授权。
-- 其余组件和 Python 依赖各走各的许可。
+- 后台密码第一次登录就改。
+- OneBot token 和 NapCat WebUI token 用随机值。
+- API Key 只放本机，别发出去；不要把这个目录整个传到公开网盘或 GitHub。
+- 6185、6099、6199、3311 不要暴露公网。
+- 机器人用小号；主人 QQ 不要写进群公告或公开文档。
+- `runtime\backups` 里是聊天记录和记忆，别外传。
+- QQ 音乐 cookie 在 `backend\qqmusic\cookie.json`，不进备份。
 
-具体清单、版本和注意事项都在 [NOTICE.md](NOTICE.md)，许可证文本放在 `LICENSES/`。
+---
 
-QQ 账号、QQ 音乐账号和 API Key 都是你自己提供的。要二次分发，先把 NOTICE 看完。
+## 12. 许可和第三方
 
-## 附：装好之后目录长这样
+本项目按 AGPL-3.0 发布，全文在 [LICENSE](LICENSE)。包内第三方组件另有许可：
 
-```
-D:\dafeiyu
+- AstrBot 4.29.3：AGPL-3.0，版权归 Soulter 和贡献者。
+- NapCat 4.18.42：Limited Redistribution License，禁止商用，再分发要带许可全文。
+- ffmpeg 7.1：GPLv3 构建，再分发要附 GPLv3 全文和源码获取方式。
+- CPython 3.12：Python Software Foundation License，文本在 `runtime\python\LICENSE.txt`。
+- `astrbot_plugin_listen_music`：上游没有声明许可证，严格说没有明确授权。
+- `qqmusic-api-enhanced` 1.0.8：MIT AND Apache-2.0。
+- QQ NT 9.9.36：腾讯的软件，安装包随包提供只为兼容 NapCat，不授予任何许可，请按腾讯的条款使用。
+
+完整清单、版本和注意事项在 [NOTICE.md](NOTICE.md)，许可文本在 `LICENSES\`。
+
+---
+
+## 附录：装好之后目录长这样
+
+```text
+2.0版本
 ├─ README.md
+├─ AUTHOR.txt
 ├─ DISCLAIMER.md
 ├─ LICENSE
 ├─ NOTICE.md
+├─ VERSION
 ├─ .gitignore
-├─ docs
-│  ├─ INSTALL.md
-│  ├─ CONFIGURATION.md
-│  ├─ TROUBLESHOOTING.md
-│  └─ SCREENSHOTS.md
-├─ LICENSES
-│  ├─ ffmpeg-LICENSE.txt
-│  ├─ NapCat-LICENSE.txt
-│  └─ Apache-2.0.txt
 ├─ assets
 │  ├─ icon.ico
 │  ├─ persona.md
-│  └─ screenshots
+│  └─ screenshots\chat.png
+├─ docs
+│  ├─ INSTALL.md
+│  ├─ CONFIGURATION.md
+│  └─ TROUBLESHOOTING.md
+├─ LICENSES
+│  ├─ Apache-2.0.txt
+│  ├─ ffmpeg-LICENSE.txt
+│  ├─ NapCat-LICENSE.txt
+│  └─ README.md
 ├─ scripts
-│  ├─ start.ps1
-│  ├─ start.cmd
-│  ├─ stop.ps1
+│  ├─ start.cmd / start.ps1
+│  ├─ stop.cmd / stop.ps1
 │  ├─ status.pyw
-│  └─ backup.py
+│  ├─ restart-ui.ps1
+│  ├─ setup.cmd / setup.py
+│  ├─ diagnose.cmd / diagnose.ps1
+│  ├─ backup.py
+│  ├─ paths.local.example.ps1
+│  └─ 大肥鱼.ico
 ├─ runtime
 │  ├─ AstrBot-4.29.3
 │  │  ├─ main.py
-│  │  ├─ .venv
-│  │  ├─ requirements.txt
-│  │  └─ data
-│  │     ├─ cmd_config.json
-│  │     ├─ plugins
-│  │     ├─ dafeiyu_character.md
-│  │     ├─ dafeiyu_quota_config.json
-│  │     ├─ dafeiyu_voice.json
-│  │     ├─ dafeiyu_reconnect.json
-│  │     ├─ stickers
-│  │     └─ collected_stickers
+│  │  ├─ astrbot\
+│  │  ├─ data\
+│  │  │  ├─ cmd_config.json
+│  │  │  ├─ plugins\
+│  │  │  ├─ dafeiyu_character.md
+│  │  │  ├─ dafeiyu_quota_config.json
+│  │  │  ├─ dafeiyu_voice.json
+│  │  │  ├─ dafeiyu_reconnect.json
+│  │  │  ├─ stickers\
+│  │  │  └─ diary_library\
+│  │  └─ LICENSE
 │  ├─ napcat-shell
-│  └─ bin
-├─ backend
-│  └─ qqmusic
-└─ data
-   └─ music_library
+│  ├─ bin\ffmpeg.exe · node.exe
+│  ├─ python\ (自带 Python 3.12 + 依赖)
+│  ├─ installer\QQ_9.9.36_260924_x64_01.exe
+│  ├─ backups\
+│  └─ logs\
+├─ backend\qqmusic
+└─ data\music_library
 ```
 
-就这些。装的时候卡住了，先看第 9 节；还不行，开个 Issue，把日志和报错贴上来。
+就这些。装的时候卡住了，先看第 10 节和 `docs\TROUBLESHOOTING.md`；还不行，把 `runtime\logs\启动.log` 和 `runtime\AstrBot-4.29.3\startup.log` 里的报错发给维护的人。
+
+---
+
+大肥鱼 2.0 整合包 · 由 **YunShan_You（悠云山）** 整理 · AGPL-3.0

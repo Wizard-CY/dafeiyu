@@ -3,11 +3,13 @@
 import json
 import time
 import urllib.request
+from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
 BACKEND = 'http://127.0.0.1:3311/login/cookie'
-PROFILE = r'D:\dafeiyu\backend/qqmusic\browser_profile'
+HERE = Path(__file__).resolve().parent
+PROFILE = str(HERE / 'browser_profile')
 
 
 def post_cookie(cookie):
@@ -37,7 +39,7 @@ def main():
             names = {item['name']: item['value'] for item in cookies if 'qq.com' in item.get('domain', '')}
             if names.get('qm_keyst') and (names.get('uin') or names.get('qqmusic_uin')):
                 cookie = '; '.join('%s=%s' % (item['name'], item['value']) for item in cookies if 'qq.com' in item.get('domain', ''))
-                with open(r'D:\dafeiyu\backend/qqmusic\browser_cookie.txt', 'w', encoding='utf-8') as handle:
+                with open(HERE / 'browser_cookie.txt', 'w', encoding='utf-8') as handle:
                     handle.write(cookie)
                 print('发现登录 cookie，长度', len(cookie), flush=True)
                 result = post_cookie(cookie)

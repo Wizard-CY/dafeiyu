@@ -1,6 +1,6 @@
 # 免责声明
 
-本整合包由 **YunShan You** 整理，按 AGPL-3.0 发布（见 [LICENSE](LICENSE)），建议用于个人学习、研究和技术交流；包内第三方组件另有许可，详见 [NOTICE.md](NOTICE.md)。
+本整合包由 **YunShan_You（悠云山）** 整理，按 AGPL-3.0 发布（见 [LICENSE](LICENSE)），建议用于个人学习、研究和技术交流；包内第三方组件另有许可，详见 [NOTICE.md](NOTICE.md)。
 
 ## 1. 非官方项目
 
@@ -39,4 +39,4 @@
 
 ---
 
-维护与整理：**YunShan You**
+维护与整理：**YunShan_You（悠云山）**

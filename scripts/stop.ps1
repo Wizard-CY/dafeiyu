@@ -1,20 +1,27 @@
-﻿# 大肥鱼结束下线 · packaged by YunShan You
-﻿param([switch]$NoBackup)
+﻿# 大肥鱼 2.0 · 结束下线
+# 整理：YunShan_You（悠云山）
+# 先让聊天程序提炼一次记忆，再备份，最后关掉聊天程序、QQ 音乐后端和 QQ。
+param([switch]$NoBackup)
 
-$isAdmin = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+$isAdmin = [Security.Principal.WindowsPrincipal]::new(
+    [Security.Principal.WindowsIdentity]::GetCurrent()
+).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) {
-    Start-Process powershell.exe -Verb RunAs -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $PSCommandPath)
+    Start-Process powershell.exe -Verb RunAs -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', ('"' + $PSCommandPath + '"'))
     return
 }
 
 $baseDir = Split-Path $PSScriptRoot -Parent
-$py = Join-Path $baseDir 'runtime\AstrBot-4.29.3\.venv\Scripts\python.exe'
+$py = Join-Path $baseDir 'runtime\python\python.exe'
 $backup = Join-Path $PSScriptRoot 'backup.py'
-$log = Join-Path $baseDir 'runtime\下线上次记录.txt'
+$dataDir = Join-Path $baseDir 'runtime\AstrBot-4.29.3\data'
+$logDir = Join-Path $baseDir 'runtime\logs'
+$log = Join-Path $logDir '下线记录.txt'
+if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 
-# 下线前先让聊天程序提炼一次记忆，最多等 45 秒
-$memoryFlag = Join-Path $baseDir 'runtime\AstrBot-4.29.3\data\dafeiyu_memory.flag'
-$memoryState = Join-Path $baseDir 'runtime\AstrBot-4.29.3\data\dafeiyu_memory_state.json'
+# 下线前先让聊天程序提炼一次记忆，最多等 90 秒
+$memoryFlag = Join-Path $dataDir 'dafeiyu_memory.flag'
+$memoryState = Join-Path $dataDir 'dafeiyu_memory_state.json'
 try {
     if (Get-NetTCPConnection -State Listen -LocalPort 6185 -ErrorAction SilentlyContinue) {
         $before = ''
@@ -36,11 +43,14 @@ try {
             if (-not (Test-Path $memoryFlag) -and ($after -ne $before -or $afterStamp -gt $beforeStamp)) { break }
         }
     }
-} catch { }
+}
+catch {
+}
 
 if (-not $NoBackup) {
     try {
         & $py $backup | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Backup failed' }
         $backupResult = '已备份'
     }
     catch {
@@ -51,9 +61,9 @@ else {
     $backupResult = '跳过备份'
 }
 
-for ($round = 0; $round -lt 5; $round++) {
+for ($round = 0; $round -lt 6; $round++) {
     Get-CimInstance Win32_Process -Filter "Name='python.exe' OR Name='pythonw.exe'" -ErrorAction SilentlyContinue | ForEach-Object {
-        if ($_.CommandLine -and $_.CommandLine -match 'AstrBot-4\.29\.3.*main\.py') {
+        if ($_.CommandLine -and $_.CommandLine -match 'main\.py' -and $_.CommandLine -match 'AstrBot-4\.29\.3') {
             Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
         }
     }
@@ -74,7 +84,9 @@ $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
 "$stamp 下线；$backupResult；$state" | Out-File -FilePath $log -Encoding utf8 -Append
 Write-Output "$stamp $backupResult $state"
 
-# 停掉 QQ 音乐后端
+# 停掉 QQ 音乐后端（3311）
 $backend = Get-NetTCPConnection -State Listen -LocalPort 3311 -ErrorAction SilentlyContinue |
     Select-Object -ExpandProperty OwningProcess -Unique
-foreach ($pid in $backend) { Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue }
+foreach ($backendProcessId in $backend) {
+    Stop-Process -Id $backendProcessId -Force -ErrorAction SilentlyContinue
+}

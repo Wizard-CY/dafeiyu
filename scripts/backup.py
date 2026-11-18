@@ -1,5 +1,7 @@
-# 大肥鱼备份脚本 · packaged by YunShan You
-"""Package the running bot's settings, plugins and memory into a daily zip."""
+"""把运行中的配置、插件、记忆和表情打包成每日备份 zip。
+
+整理 / 维护：YunShan_You（悠云山）
+"""
 
 import sqlite3
 import zipfile
@@ -8,37 +10,48 @@ from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
 DATA = BASE / 'runtime' / 'AstrBot-4.29.3' / 'data'
-OUTPUTS = BASE / 'assets'
+SCRIPTS = BASE / 'scripts'
 DEST = BASE / 'runtime' / 'backups'
 KEEP = 8
-SKIP_NAMES = {'__pycache__', 'dafeiyu_media', 'temp'}
+SKIP_NAMES = {'__pycache__', 'dafeiyu_media', 'temp', 'logs', 'dist'}
+SKIP_SUFFIXES = ('.lock',)
 
 
 def add_tree(archive, root, arc_prefix):
-    """Add a directory tree while skipping caches and generated media."""
+    """递归写入目录，跳过缓存和运行中的锁文件。"""
+    if not root.is_dir():
+        return
     for path in sorted(root.rglob('*')):
-        if any(part in SKIP_NAMES for part in path.relative_to(root).parts):
+        rel = path.relative_to(root)
+        if any(part in SKIP_NAMES for part in rel.parts):
+            continue
+        if path.name.endswith(SKIP_SUFFIXES):
             continue
         if path.is_file():
-            archive.write(path, arc_prefix + '/' + path.relative_to(root).as_posix())
+            archive.write(path, arc_prefix + '/' + rel.as_posix())
+
+
+def sqlite_snapshot(source, target):
+    """用 SQLite 在线备份接口取一致快照。"""
+    with sqlite3.connect(source) as src:
+        with sqlite3.connect(target) as dst:
+            src.backup(dst)
 
 
 def main():
     DEST.mkdir(parents=True, exist_ok=True)
-    target = DEST / f'dafeiyu_{datetime.now():%Y%m%d_%H%M}.zip'
-    snapshot = DEST / '_group_memory.sqlite'
-    if (DATA / 'dafeiyu_group_memory.db').exists():
-        with sqlite3.connect(DATA / 'dafeiyu_group_memory.db') as source:
-            with sqlite3.connect(snapshot) as copy:
-                source.backup(copy)
-            copy.close()
+    target = DEST / f'dafeiyu_{datetime.now():%Y%m%d_%H%M%S_%f}.zip'
+    group_snapshot = DEST / '_group_memory.sqlite'
     conv_snapshot = DEST / '_conversations.sqlite'
-    if (DATA / 'data_v4.db').exists():
-        with sqlite3.connect(DATA / 'data_v4.db') as source:
-            with sqlite3.connect(conv_snapshot) as copy:
-                source.backup(copy)
-            copy.close()
-    with zipfile.ZipFile(target, 'w', zipfile.ZIP_DEFLATED) as archive:
+    for snapshot, source in (
+        (group_snapshot, DATA / 'dafeiyu_group_memory.db'),
+        (conv_snapshot, DATA / 'data_v4.db'),
+    ):
+        if source.exists():
+            sqlite_snapshot(source, snapshot)
+
+    partial = target.with_suffix('.zip.partial')
+    with zipfile.ZipFile(partial, 'w', zipfile.ZIP_DEFLATED) as archive:
         add_tree(archive, DATA / 'plugins', 'data/plugins')
         for name in ('cmd_config.json', 'skills.json', 'mcp_server.json'):
             if (DATA / name).exists():
@@ -48,31 +61,24 @@ def main():
                 archive.write(path, 'data/' + path.name)
         if (DATA / 'stickers' / 'catalog.json').exists():
             archive.write(DATA / 'stickers' / 'catalog.json', 'data/stickers/catalog.json')
-        add_tree(archive, OUTPUTS, 'assets')
-        add_tree(archive, BASE / 'scripts', 'scripts')
-        for doc in sorted(BASE.glob('*.md')):
-            archive.write(doc, doc.name)
-        core_media = BASE / 'runtime' / 'AstrBot-4.29.3' / 'astrbot' / 'core' / 'utils' / 'media_utils.py'
-        if core_media.exists():
-            archive.write(core_media, 'astrbot/core/utils/media_utils.py')
-        core_image = BASE / 'runtime' / 'AstrBot-4.29.3' / 'astrbot' / 'core' / 'utils' / 'image_input.py'
-        if core_image.exists():
-            archive.write(core_image, 'astrbot/core/utils/image_input.py')
-        backend = BASE / 'backend/qqmusic'
+        add_tree(archive, SCRIPTS, 'scripts')
+        add_tree(archive, BASE / 'docs', 'docs')
+        if (BASE / 'README.md').exists():
+            archive.write(BASE / 'README.md', 'README.md')
+        backend = BASE / 'backend' / 'qqmusic'
         if (backend / 'server.mjs').exists():
             archive.write(backend / 'server.mjs', 'backend/qqmusic/server.mjs')
-        if (backend / 'vendor').is_dir():
-            add_tree(archive, backend / 'vendor', 'backend/qqmusic/vendor')
-        if (DATA / 'memory').is_dir():
-            add_tree(archive, DATA / 'memory', 'data/memory')
-        if (DATA / 'collected_stickers').is_dir():
-            add_tree(archive, DATA / 'collected_stickers', 'data/collected_stickers')
-        if snapshot.exists():
-            archive.write(snapshot, 'data/dafeiyu_group_memory.db')
+        add_tree(archive, backend / 'vendor', 'backend/qqmusic/vendor')
+        for folder in ('memory', 'profiles', 'collected_stickers'):
+            if (DATA / folder).is_dir():
+                add_tree(archive, DATA / folder, 'data/' + folder)
+        if group_snapshot.exists():
+            archive.write(group_snapshot, 'data/dafeiyu_group_memory.db')
         if conv_snapshot.exists():
             archive.write(conv_snapshot, 'data/data_v4.db')
-    archive.close()
-    for leftover in (snapshot, conv_snapshot):
+    partial.replace(target)
+
+    for leftover in (group_snapshot, conv_snapshot):
         if leftover.exists():
             try:
                 leftover.unlink()

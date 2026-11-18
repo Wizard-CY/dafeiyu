@@ -4,7 +4,8 @@
 
 - `icon.ico`：状态中心 / 托盘图标
 - `persona.md`：可读的人设卡副本
+- `screenshots/chat.png`：脱敏对话示例
 
 实际运行时人设以 `runtime/AstrBot-4.29.3/data/dafeiyu_character.md` 为准。
 
-维护与整理：**YunShan You**
+维护与整理：**YunShan_You（悠云山）**
