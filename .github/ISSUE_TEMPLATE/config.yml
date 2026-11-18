@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 安装与使用文档
+    url: https://github.com/Wizard-CY/dafeiyu/tree/main/docs
+    about: 先看文档，安装、配置、排障都在这里。
+  - name: 安全问题
+    url: https://github.com/Wizard-CY/dafeiyu/security/advisories/new
+    about: 不要开公开 Issue；用私密漏洞报告。

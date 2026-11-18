@@ -1,0 +1,79 @@
+name: Bug 报告
+description: 装不上、连不上、不回消息、报错
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先看一下 [排障文档](https://github.com/Wizard-CY/dafeiyu/blob/main/docs/TROUBLESHOOTING.md)，很多问题那里已经有答案。
+
+        **发日志前请打码**：API Key、QQ 号、cookie、`C:\Users\...` 路径。不要在公开 Issue 里贴这些。
+
+  - type: input
+    id: version
+    attributes:
+      label: 大肥鱼版本
+      description: 在包根目录的 VERSION 文件里，或者控制中心「关于」
+      placeholder: "2.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install
+    attributes:
+      label: 装的哪个包
+      options:
+        - Releases 的完整运行包
+        - 自己从源码搭的
+        - 从 1.0.1 升级上来的
+    validations:
+      required: true
+
+  - type: input
+    id: windows
+    attributes:
+      label: Windows 版本
+      placeholder: "Windows 11 23H2 x64"
+    validations:
+      required: true
+
+  - type: input
+    id: qq
+    attributes:
+      label: QQ 版本
+      description: 必须是 9.9.36；在 QQ「设置 → 关于」里看
+      placeholder: "9.9.36"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: 发生了什么
+      description: 你做了什么、期望是什么、实际是什么。能稳定复现最好。
+      placeholder: |
+        1. 双击 scripts\start.cmd
+        2. QQ 登录窗口没有出现
+        3. 托盘一直显示「等待 QQ 连接」
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志 / 诊断报告
+      description: 贴关键报错即可。`scripts\diagnose.cmd` 生成的诊断报告也可以，记得打码。
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 确认
+      options:
+        - label: 我看过 README 和 docs/TROUBLESHOOTING.md，没有找到答案
+          required: true
+        - label: 我用的是机器人小号，不是主号
+          required: true
+        - label: 日志里的 Key、QQ 号、路径已经打码
+          required: true

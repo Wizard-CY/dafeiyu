@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dev tools
+        run: python -m pip install -r requirements-dev.txt
+      - name: Compile
+        run: python -m compileall -q scripts plugins tools tests
+      - name: Lint
+        run: ruff check scripts plugins tools tests
+      - name: Test
+        run: python -m pytest -q
+      - name: Secret scan
+        run: python tools/check_secrets.py
+
+  powershell:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse PowerShell scripts
+        shell: pwsh
+        run: |
+          $bad = 0
+          Get-ChildItem scripts/*.ps1 | ForEach-Object {
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$null, [ref]$errors) | Out-Null
+            if ($errors) {
+              $bad++
+              Write-Host "== $($_.Name) =="
+              $errors | ForEach-Object { Write-Host $_ }
+            }
+          }
+          if ($bad -gt 0) { exit 1 }
+          Write-Host "PowerShell syntax ok"
