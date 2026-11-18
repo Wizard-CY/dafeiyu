@@ -30,7 +30,7 @@ COPY_FILES = (
 IGNORE_NAMES = {
     '__pycache__', '.venv', 'backups', 'logs', 'cookie.json', 'browser_profile',
     'paths.local.ps1', 'data_v4.db', 'memory', 'profiles', 'friend_archive',
-    'voice_cache', 'temp', 'dist', 'qr_login.png',
+    'voice_cache', 'temp', 'dist', 'qr_login.png', 'RELEASING.md',
 }
 IGNORE_SUFFIXES = ('.pyc', '.pyo', '.log', '.tmp', '.part', '.partial')
 
