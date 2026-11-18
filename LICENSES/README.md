@@ -19,7 +19,3 @@
 - NapCat 的 node_modules：`runtime/napcat-shell/node_modules/*/LICENSE`
 
 打包 Release 时，把这个目录一起带上。
-
----
-
-整理 / 维护：**YunShan_You（悠云山）**
