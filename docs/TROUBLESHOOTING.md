@@ -43,7 +43,7 @@ runtime\logs\启动.log
 ```
 
 5. 常见原因：
-   - **QQ 不是 9.9.36**：`start.ps1` 会拒绝启动 QQ 接入；按 README 第 3 节重装。
+   - **QQ 不是 9.9.36**：`start.ps1` 会拒绝启动 QQ 接入；按 [INSTALL.md](INSTALL.md) 第 4 节重装。
    - **没替换机器人 QQ / 主人 QQ**：跑 `scripts\setup.cmd`。
    - **API Key 没填**：`cmd_config.json` 里 `provider_sources[0].key` 还是空的。
    - **杀软删了 `NapCatWinBootHook.dll` 或 `python.exe`**：看隔离区，恢复后加白名单。
@@ -87,7 +87,7 @@ netstat -ano | findstr "6099 6199"
 7. 看 `runtime\napcat-shell\startup.log` 有没有 `KickedOffLine`、`LoginError`。
 8. 确认 NapCat 的 chunk 在：`runtime\napcat-shell\conout-wiJ7YKRd.js`。`napcat.mjs` 第一行会 `import` 它，缺了会卡在 QQ 注入阶段；这个文件不能删。旧包缺这个文件的话，用完整的 2.0版本 重新解压。
 
-如果 6099 / 6199 都正常，但 QQ 窗口一直不出现或者注入失败，先把整个文件夹改成一个短的英文目录（例如 `D:\dafeiyu\JingJing2`）再试。NapCat 的注入 DLL 对少数中文/特殊字符路径不友好；这是路径问题，不是包坏了。
+如果 6099 / 6199 都正常，但 QQ 窗口一直不出现或者注入失败，先把整个文件夹改成一个短的英文目录（例如 `D:\dafeiyu`）再试。NapCat 的注入 DLL 对少数中文/特殊字符路径不友好；这是路径问题，不是包坏了。
 
 ## 被腾讯踢下线 / 频繁掉线
 
@@ -188,7 +188,3 @@ data\temp\*
 - `runtime\logs\启动.log`
 - `runtime\AstrBot-4.29.3\startup.log` 最后 100 行
 - `runtime\napcat-shell\startup.log` 最后 100 行
-
----
-
-整理 / 维护：**YunShan_You（悠云山）**

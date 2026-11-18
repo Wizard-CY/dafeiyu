@@ -167,8 +167,4 @@ $qqPath = 'D:\QQ\QQ.exe'
 runtime\python\python.exe scripts\backup.py
 ```
 
-输出到 `runtime\backups`，保留 8 份；内容见根 README 第 9 节。
-
----
-
-整理 / 维护：**YunShan_You（悠云山）**
+输出到 `runtime\backups`，保留 8 份。
