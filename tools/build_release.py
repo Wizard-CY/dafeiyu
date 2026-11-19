@@ -146,7 +146,7 @@ def build(runtime: Path, out: Path, force: bool, with_qq: bool, with_listen_musi
         with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as zf:
             for path in sorted(target.rglob('*')):
                 if path.is_file():
-                    zf.write(path, path.relative_to(target))
+                    zf.write(path, Path(target.name) / path.relative_to(target))
         digest = hashlib.sha256(archive.read_bytes()).hexdigest()
         (out / f'{ZIP_NAME}.sha256').write_text(f'{digest}  {ZIP_NAME}\n', encoding='utf-8')
         print(f'zip:    {archive}')
