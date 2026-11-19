@@ -2,6 +2,40 @@
 
 这份是维护者自己的清单，不是给普通用户看的。
 
+## 0. 日常更新（不发版）
+
+```powershell
+cd D:\dafeiyu
+git add <改过的文件>          # 按需 add，别把本地图/日志/诊断报告带进去
+git commit -m "docs: ..."
+git push origin main
+```
+
+`git push` 用的是本机 `gh` 保存的 token（Windows 凭据管理器），不需要每次登录。
+
+检查 token 有没有 `workflow` 权限：
+
+```powershell
+gh auth status
+# Token scopes 里应该有 'workflow'
+```
+
+没有的话，做一次（VPN 开着）：
+
+```powershell
+$env:HTTPS_PROXY = 'http://127.0.0.1:7890'
+gh auth refresh -h github.com -s workflow
+```
+
+授权一次后，本机会记住，以后 push 不用再授权。`gh` 命令报网络错误时，也可以先设置这个 `HTTPS_PROXY`。
+
+push 后 CI 会自动跑：
+
+```powershell
+gh run list
+gh run watch
+```
+
 ## 1. 发布前
 
 - 改 `VERSION`，同步 `CHANGELOG.md`。
