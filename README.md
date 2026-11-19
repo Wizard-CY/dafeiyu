@@ -1,5 +1,11 @@
 # 大肥鱼 DaFeiYu
 
+[![Release](https://img.shields.io/github/v/release/Wizard-CY/dafeiyu?display_name=tag&sort=semver)](https://github.com/Wizard-CY/dafeiyu/releases/latest)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0078D4)](#)
+
+> **English** — DaFeiYu is a self-hosted AI companion that lives in QQ. Built on [AstrBot](https://github.com/AstrBotDevs/AstrBot) + [NapCat](https://github.com/NapNeko/NapCatQQ) (OneBot v11), powered by DeepSeek or any OpenAI-compatible API. Windows portable bundle in [Releases](https://github.com/Wizard-CY/dafeiyu/releases/latest). UI and docs are in Chinese.
+
 QQ 上的一个 AI 聊天角色。底座是 [AstrBot](https://github.com/AstrBotDevs/AstrBot)，QQ 走 [NapCat](https://github.com/NapNeko/NapCatQQ) 的 OneBot v11，模型接 DeepSeek 或任意 OpenAI 兼容接口。
 
 ![对话示例：接得住梗，也会吐槽](assets/screenshots/chat.png)
@@ -86,6 +92,8 @@ QQ 上的一个 AI 聊天角色。底座是 [AstrBot](https://github.com/AstrBot
 完整清单在 [NOTICE.md](NOTICE.md)，许可文本在 [`LICENSES/`](LICENSES/README.md)。
 
 AGPL 允许商用，但完整包里的 NapCat 不允许。所以：**代码可以商用，这个整合包不行。**
+
+如果这个项目让你少踩一个坑，欢迎点个 Star。Star 多了，别人才更容易在 GitHub 上搜到它。
 
 ## 支持这个项目
 
