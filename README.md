@@ -10,7 +10,9 @@ QQ 上的一个 AI 聊天角色。底座是 [AstrBot](https://github.com/AstrBot
 
 ![对话示例：接得住梗，也会吐槽](assets/screenshots/chat.png)
 
-![控制中心：状态、额度、群聊和备份都在这里](assets/screenshots/status.png)
+![控制中心总览：运行状态、QQ 接入、今日互动和常用操作](assets/screenshots/status.png)
+
+*2.0.1 的控制中心总览。截图里的 QQ 号已打码。*
 
 她不是客服，也不是通用助手。会接梗、会吐槽、会装死；人设、口头禅和边界都写在 [`assets/persona.md`](assets/persona.md)，你可以改成自己的。
 

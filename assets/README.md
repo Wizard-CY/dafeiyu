@@ -5,7 +5,7 @@
 - `icon.ico`：状态中心 / 托盘图标
 - `persona.md`：可读的人设卡副本
 - `screenshots/chat.png`：脱敏对话示例
-- `screenshots/status.png`：控制中心截图（QQ 号已打码）
+- `screenshots/status.png`：控制中心总览截图（QQ 号已打码）
 - `social-preview.png`：GitHub 仓库的 Social preview
 
 实际运行时人设以 `runtime/AstrBot-4.29.3/data/dafeiyu_character.md` 为准。
