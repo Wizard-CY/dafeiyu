@@ -9,6 +9,7 @@
 - 机器人 QQ 小号。
 - DeepSeek 或 OpenAI 兼容 API Key。
 - QQ 音乐账号（可选，点歌用）。
+- B 站点歌兜底需要自己安装 `astrbot_plugin_listen_music`（2.0.1 起不随包，上游未声明许可证）。
 
 不用装 Python、Node.js、ffmpeg、AstrBot、NapCat。包里 `runtime\python` 是自带 Python 3.12，`runtime\bin` 带 ffmpeg 和 node。
 
@@ -19,7 +20,6 @@ runtime\AstrBot-4.29.3      AstrBot 主程序 + data（插件、人设、配置�
 runtime\napcat-shell        NapCat / OneBot
 runtime\bin                 ffmpeg、node
 runtime\python              自带 Python 3.12 + 依赖
-runtime\installer           QQ 9.9.36 安装包
 backend\qqmusic             QQ 音乐后端
 data\music_library          本地曲库（初始为空）
 scripts\start.ps1           一键启动
@@ -42,18 +42,12 @@ scripts\backup.py           备份
 
 NapCat 4.18.42 只支持 QQ 9.9.36。
 
-2.0.0 的完整包里带了安装包：
+2.0.1 起完整包里不再附带 QQ 安装包，自己找 9.9.36 官方包。
 
-```text
-runtime\installer\QQ_9.9.36_260924_x64_01.exe
-```
-
-SHA-256：`63255c70c7ff523e7eed7d52d9708ed7a77ea346ece6474c65dded406edb3155`
-
-后续构建默认不再附带安装包，自己找同版本官方安装包即可。装完确认版本是 9.9.36。
+2.0.0 的旧包里带的是 `runtime\installer\QQ_9.9.36_260924_x64_01.exe`，SHA-256 是 `63255c70c7ff523e7eed7d52d9708ed7a77ea346ece6474c65dded406edb3155`，只用于校验旧包。
 
 1. 退出 QQ，卸载机器上更高版本的 QQ。
-2. 运行安装包。
+2. 运行 9.9.36 安装包。
 3. 打开 QQ 设置，关闭自动更新。
 4. 确认 `HKCU\Software\Tencent\QQNT` 的 `version` 以 `9.9.36` 开头：
 
@@ -122,7 +116,7 @@ scripts\restart-ui.ps1 # 只重启托盘控制中心
 
 ## 9. 移动 / 换机器
 
-整个 `2.0版本` 文件夹一起拷走即可，所有路径都是相对的。到新机器后：
+整个包目录（2.0.1 是 `dafeiyu-2.0.1`）一起拷走即可，所有路径都是相对的。到新机器后：
 
 1. 装 QQ 9.9.36；
 2. 运行 `scripts\start.cmd`；
@@ -135,5 +129,5 @@ API Key、两个 QQ 号、人设和记忆都跟着文件夹走。
 
 1. 托盘右键「退出托盘」；
 2. 运行 `scripts\stop.cmd`；
-3. 删除整个 `2.0版本` 文件夹；
+3. 删除整个包目录；
 4. 需要的话卸载 QQ。

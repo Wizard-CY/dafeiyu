@@ -13,10 +13,12 @@ QQ 上的一个 AI 聊天角色。底座是 [AstrBot](https://github.com/AstrBot
 ## 三分钟跑起来
 
 > 实际第一次大概 15 分钟，时间主要花在装 QQ 和扫码上。
+>
+> 2.0.1 起不再附带 QQ 安装包和 `listen_music`；点歌的 QQ 音乐部分不受影响，B 站兜底需要自己装。
 
-1. 去 [Releases](https://github.com/Wizard-CY/dafeiyu/releases/latest) 下载完整包（689 MB），解压到短一点的英文路径。2.0.0 的包解出来是 `2.0版本\` 目录。
+1. 去 [Releases](https://github.com/Wizard-CY/dafeiyu/releases/latest) 下载完整包（体积和 SHA-256 见 Release），解压到短一点的英文路径。2.0.1 的包解出来是 `dafeiyu-2.0.1` 目录。
 2. 双击 `scripts\setup.cmd`，按提示填机器人 QQ、主人 QQ、API Key。
-3. 装 QQ **9.9.36**（NapCat 只支持到这一版），关掉 QQ 自动更新。2.0.0 包里带了安装包，路径是 `runtime\installer\QQ_9.9.36_260924_x64_01.exe`（后续版本默认不再附带）；不放心来源的话，自己找同版本官方安装包也行。
+3. 装 QQ **9.9.36**（NapCat 只支持到这一版），关掉 QQ 自动更新。2.0.1 起不再附带 QQ 安装包，自己找 9.9.36 官方包；2.0.0 的旧包里还带着，SHA-256 在 [docs/INSTALL.md](docs/INSTALL.md)。
 4. 双击 `scripts\start.cmd`，会弹一次 UAC；QQ 登录窗口出来以后，用机器人小号扫码。
 5. 浏览器打开 `http://127.0.0.1:6099` 配 OneBot（`ws://127.0.0.1:6199/ws`），把机器人拉进群，在控制中心「群聊状态」里给她放权。
 
@@ -28,7 +30,7 @@ QQ 上的一个 AI 聊天角色。底座是 [AstrBot](https://github.com/AstrBot
 
 - 私聊聊天、安慰、讲题、翻译/改写；每个好友每天 75 条，主人不限量。
 - 群聊：@ 和引用必回，普通消息按概率接话；每个群独立记忆，默认 120 条/天。
-- 表情包、语音条、点歌（QQ 音乐优先，B 站兜底）。
+- 表情包、语音条、点歌（QQ 音乐优先；B 站兜底要自己装 `astrbot_plugin_listen_music`）。
 - 每天 21:00 左右发一条空间动态，会回自己动态下的评论。
 - 记忆：私聊/群聊分开记，每天 22:00 提炼，下线前也会先提炼再备份。
 - 托盘控制中心：看状态、改额度、给群放权、备份、登录 QQ 音乐。
@@ -52,7 +54,7 @@ QQ 上的一个 AI 聊天角色。底座是 [AstrBot](https://github.com/AstrBot
 - `runtime/AstrBot-4.29.3/`：AstrBot 4.29.3 的源码。
 - `assets/`：图标、人设、截图。
 
-完整运行包（Python 3.12、Node、ffmpeg、NapCat；2.0.0 还带了 QQ 安装包）在 Releases，不进 git。原因很实际：太大，而且 NapCat 和 QQ 的再分发各有各的限制。
+完整运行包（Python 3.12、Node、ffmpeg、NapCat）在 Releases，不进 git。原因很实际：太大，而且 NapCat 和 QQ 的再分发各有各的限制。
 
 ## 文档
 
@@ -79,7 +81,7 @@ QQ 上的一个 AI 聊天角色。底座是 [AstrBot](https://github.com/AstrBot
 - qqmusic-api-enhanced 1.0.8：MIT AND Apache-2.0。
 - `dafeiyu_diary`（空间动态）：MIT，© 2026 cube-lover，许可文本在 `plugins/dafeiyu_diary/LICENSE`。
 - QQ NT 9.9.36：腾讯的软件，不授予再分发许可。
-- `astrbot_plugin_listen_music`：上游未声明许可证。2.0.0 包里还带着，下个版本会移除或替换；你要再分发这个包，先把它删掉。
+- `astrbot_plugin_listen_music`：上游未声明许可证。2.0.1 起不再随包；B 站兜底要自己装，再分发前先确认许可。
 
 完整清单在 [NOTICE.md](NOTICE.md)，许可文本在 [`LICENSES/`](LICENSES/README.md)。
 
@@ -91,4 +93,4 @@ AGPL 允许商用，但完整包里的 NapCat 不允许。所以：**代码可�
 
 ---
 
-维护：YunShan_You（悠云山） · 2.0.0
+维护：YunShan_You（悠云山） · 2.0.1

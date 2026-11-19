@@ -57,7 +57,7 @@ python tools\build_release.py --runtime "D:\path\to\clean\runtime-package" --out
 - 复制运行时的 `runtime\`、`backend\`、`data\music_library\`；
 - 用仓库里的 `scripts\`、`docs\`、`assets\`、`LICENSES\`、根目录文档覆盖；
 - 把 `plugins\dafeiyu_*` 和 `dafeiyu_state.py` 放进 `runtime\AstrBot-4.29.3\data\`；
-- 默认排除 `runtime\installer\`（QQ 安装包）、聊天数据库、记忆、日志、备份、cookie、`paths.local.ps1`；
+- 默认排除 `runtime\installer\`（QQ 安装包）、`astrbot_plugin_listen_music`、聊天数据库、记忆、日志、备份、cookie、`paths.local.ps1`；
 - 检查 `cmd_config.json` 里没有 Key / 密码；
 - `--zip` 时生成 `dist\dafeiyu-<version>-full.zip` 和 `.sha256`。
 
@@ -70,13 +70,13 @@ python tools\build_release.py --runtime "D:\path\to\clean\runtime-package" --out
 - 上传 zip 和 `.sha256`。
 - 确认 release 里没有 `QQ_9.9.36...exe`、没有 `data_v4.db`、没有 `cookie.json`。
 
-## 4. 如果还要发 2.0.0 的修订
+## 4. 资产命名
 
-2.0.0 的资产名还是 `JingJing-full-2.0.0.zip`，包目录是 `2.0版本\`。改名和换目录会影响已经下载的人，所以放在下一个小版本做，不要偷偷替换资产。
+2.0.0 的资产名是 `JingJing-full-2.0.0.zip`，包目录是 `2.0版本\`。2.0.1 起改成 `dafeiyu-2.0.1-full.zip`，包目录 `dafeiyu-2.0.1`。不要偷偷替换已发布版本的资产。
 
 ## 5. 清历史里的旧密码
 
-旧 commit 里有一个已经失效的 dashboard 密码。当前文件已经删了，但 `v1.0.0` tag 和 git 历史还能看到。清理步骤（会改写所有 commit hash，做之前先备份仓库）：
+2026-11-19 已经用 `git filter-repo` 清过一次旧 dashboard 密码和本机路径，并 force push 了 `main` 和 tags。以后再混进敏感信息，按下面做（会改写所有 commit hash，先备份仓库）：
 
 ```bash
 # 1. 安装 git-filter-repo（需要 Python）
@@ -96,7 +96,7 @@ git log --all -S '旧密码的原文' --oneline   # 应该没有输出
 git log --all -S 'JingJing@' --oneline      # 应该没有输出
 
 # 5. 重新打 tag、force push
-git tag -a v2.0.0 -m "2.0.0"
+git tag -a v2.0.1 -m "2.0.1"
 git push --force --tags origin main
 ```
 
@@ -109,6 +109,6 @@ git push --force --tags origin main
 
 ## 6. 第三方组件
 
-- `astrbot_plugin_listen_music` 上游没有许可证。2.0.0 的包里还在，下个版本要移除或替换；没解决之前不要再发带它的包。
+- `astrbot_plugin_listen_music` 上游没有许可证。2.0.1 起已经不再随包；不要加回来。
 - QQ 安装包不要再随包发。README 指向官方下载页和版本校验方法。
 - 发版前跑一遍 `NOTICE.md` 的清单，确认版本号和实际文件对得上。

@@ -5,7 +5,7 @@
     python tools/build_release.py --runtime "D:/path/to/clean-package" --out dist --zip
 
 它不会下载任何东西；运行时（Python、Node、ffmpeg、NapCat）必须由你提供。
-默认不复制 QQ 安装包和任何聊天数据/凭据。
+默认不复制 QQ 安装包、listen_music 和任何聊天数据/凭据。
 """
 from __future__ import annotations
 
@@ -95,7 +95,7 @@ def check_no_secrets(root: Path) -> None:
         raise SystemExit(2)
 
 
-def build(runtime: Path, out: Path, force: bool, with_qq: bool, make_zip: bool) -> Path:
+def build(runtime: Path, out: Path, force: bool, with_qq: bool, with_listen_music: bool, make_zip: bool) -> Path:
     """Assemble the release directory and optionally zip it."""
     target = out / f'dafeiyu-{VERSION}'
     if target.exists():
@@ -121,6 +121,11 @@ def build(runtime: Path, out: Path, force: bool, with_qq: bool, make_zip: bool) 
     for plugin in sorted((ROOT / 'plugins').glob('dafeiyu_*')):
         if plugin.is_dir():
             shutil.copytree(plugin, plugins_dst / plugin.name, ignore=ignore, dirs_exist_ok=True)
+
+    # 2.0.1 起默认不发 listen_music：上游未声明许可证；B 站兜底需自己装。
+    listen_music = plugins_dst / 'astrbot_plugin_listen_music'
+    if not with_listen_music and listen_music.exists():
+        shutil.rmtree(listen_music)
     copy_file(ROOT / 'plugins' / 'dafeiyu_state.py',
               target / 'runtime' / 'AstrBot-4.29.3' / 'data' / 'dafeiyu_state.py')
 
@@ -155,6 +160,7 @@ def main() -> int:
     parser.add_argument('--out', type=Path, default=ROOT / 'dist', help='输出目录')
     parser.add_argument('--force', action='store_true', help='目标已存在时覆盖')
     parser.add_argument('--with-qq-installer', action='store_true', help='把 QQ 9.9.36 安装包也打进去')
+    parser.add_argument('--with-listen-music', action='store_true', help='把未声明许可证的 listen_music 也打进去（不建议）')
     parser.add_argument('--zip', action='store_true', help='同时生成 zip 和 sha256')
     args = parser.parse_args()
 
@@ -162,7 +168,7 @@ def main() -> int:
     if not runtime.is_dir():
         print(f'运行目录不存在：{runtime}', file=sys.stderr)
         return 1
-    build(runtime, args.out.resolve(), args.force, args.with_qq_installer, args.zip)
+    build(runtime, args.out.resolve(), args.force, args.with_qq_installer, args.with_listen_music, args.zip)
     return 0
 
 
